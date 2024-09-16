@@ -16,3 +16,9 @@ Route::prefix('system')->group(function () {
         Route::post('/save', 'SystemAdminServicesController@blackListSave');
     });
 });
+
+// 文章管理模块
+Route::prefix('article')->group(function () {
+    Route::get('/list', 'ArticlesAdminController@list');
+    
+});
