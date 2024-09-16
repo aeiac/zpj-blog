@@ -13,7 +13,7 @@ return new class extends Migration {
         //php artisan make:migration create_system_blacklist_table
         Schema::create('admin_users_log', function (Blueprint $table) {
             $table->id()->comment('表id');
-            $table->integer('admin_users_id')->nullable(false)->comment('管理员id');
+            $table->unsignedInteger('admin_users_id')->nullable(false)->comment('管理员id');
             $table->string('path')->nullable(false)->comment('请求来源');
             $table->string('request')->nullable(false)->comment('提交参数');
             $table->string('ip')->nullable(false)->comment('操作ip');

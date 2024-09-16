@@ -12,13 +12,13 @@ return new class extends Migration {
     {
         Schema::create('articles_type', function (Blueprint $table) {
             $table->id();
-            $table->integer('f_id')->comment('分类父级ID');
+            $table->unsignedInteger ('f_id')->comment('分类父级ID');
             $table->string('type_name')->nullable()->comment('分类名称');
             $table->text('description')->nullable()->comment('分类描述');
             $table->enum('status', ['active', 'inactive'])->default('active')->comment('分类状态:(使用:active, 禁用:inactive)');
-            $table->unsignedInteger('sort_order')->default(0)->comment('排序顺序');
+            $table->integer('sort_order')->default(0)->comment('排序顺序');
             $table->string('image')->nullable()->comment('分类图片');
-            $table->unsignedBigInteger('created_by')->nullable()->comment('创建分类的用户ID');
+            $table->unsignedInteger ('created_by')->nullable()->comment('创建分类的用户ID');
             $table->string('meta_title')->nullable()->comment('分类的SEO标题');
             $table->text('meta_description')->nullable()->comment('分类的SEO描述');
 
