@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\AdminController;
 use App\Http\Services\Admin\Articles\ArticlesAdminServices;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
 class ArticlesAdminController extends AdminController
 {

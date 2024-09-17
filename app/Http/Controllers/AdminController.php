@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Const\CommonConst;
 use App\Http\Services\Admin\LoginAdminUsersServices;
-use App\Http\Services\Admin\SystemAdminPermissionAuthServices;
+use App\Http\Services\Admin\Systems\SystemAdminPermissionAuthServices;
 use App\Models\AdminUsers;
 use App\Models\AdminUsersLog;
 use Illuminate\Http\JsonResponse;

@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\AdminController;
-use App\Http\Services\Admin\SystemAdminServices;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Services\Admin\Systems\SystemAdminServices;
+use Illuminate\Http\Request;
 
 class SystemAdminServicesController extends AdminController
 {
@@ -36,5 +35,6 @@ class SystemAdminServicesController extends AdminController
         $savaResult=$services->savaBlackList($input);
         return  $this->success($savaResult);
     }
+
 
 }

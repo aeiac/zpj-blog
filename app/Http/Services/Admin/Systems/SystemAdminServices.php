@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services\Admin;
+namespace App\Http\Services\Admin\Systems;
 
 use App\Models\Systems\SystemBlackList;
 use Illuminate\Support\Arr;
