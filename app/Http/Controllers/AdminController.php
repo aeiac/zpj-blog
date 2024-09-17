@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Const\CommonConst;
 use App\Http\Services\Admin\LoginAdminUsersServices;
+use App\Http\Services\Admin\SystemAdminPermissionAuthServices;
 use App\Models\AdminUsers;
 use App\Models\AdminUsersLog;
 use Illuminate\Http\JsonResponse;
@@ -49,7 +50,7 @@ class AdminController extends Controller
     /**
      * 鉴权初始化
      * @param $method
-     * @return array|JsonResponse|void|null
+     * @return array|bool|JsonResponse|void|null
      */
     private function initial($method)
     {
@@ -62,6 +63,9 @@ class AdminController extends Controller
         $adminUserId = LoginAdminUsersServices::getToken($this->accessToken);
         if ($adminUserId) {
             $this->adminUserInfo = AdminUsers::find($adminUserId);
+        }
+        if ($this->systemAdminAuthPermission()) {
+            return $this->errorJson(400, '无此权限！');
         }
     }
 
@@ -155,5 +159,14 @@ class AdminController extends Controller
             'current_page' => $params['current_page'],// 当前页码
             'last_page' => $params['last_page']       // 最后一页
         ];
+    }
+
+    /**
+     * 动态验证权限
+     * @return bool
+     */
+    public function systemAdminAuthPermission(): bool
+    {
+        return SystemAdminPermissionAuthServices::getSelectRoleAndPermissionInner($this->adminUserInfo, Request::path());
     }
 }
