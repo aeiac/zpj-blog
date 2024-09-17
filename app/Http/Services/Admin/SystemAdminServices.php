@@ -2,9 +2,8 @@
 
 namespace App\Http\Services\Admin;
 
-use App\Models\SystemBlackList;
+use App\Models\Systems\SystemBlackList;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Hash;
 
 class SystemAdminServices
 {

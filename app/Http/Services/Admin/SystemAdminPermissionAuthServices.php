@@ -3,9 +3,9 @@
 namespace App\Http\Services\Admin;
 
 use App\Http\Controllers\AdminController;
-use App\Models\SystemAdminPermission;
-use App\Models\SystemAdminRolePermission;
-use App\Models\SystemAdminUsersRole;
+use App\Models\Systems\SystemAdminPermission;
+use App\Models\Systems\SystemAdminRolePermission;
+use App\Models\Systems\SystemAdminUsersRole;
 
 class SystemAdminPermissionAuthServices extends AdminController
 {

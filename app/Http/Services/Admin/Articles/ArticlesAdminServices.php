@@ -3,8 +3,7 @@
 namespace App\Http\Services\Admin\Articles;
 
 use App\Http\Controllers\Admin\ArticlesAdminController;
-use App\Models\Articlesr;
-use App\Models\SystemBlackList;
+use App\Models\Articles\Articlesr;
 
 class ArticlesAdminServices extends ArticlesAdminController
 {
