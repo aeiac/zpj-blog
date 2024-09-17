@@ -3,10 +3,10 @@
 
 namespace App\Utils;
 
+use App\Const\ErrorCodeConst;
+use App\Models\Systems\SystemBlackList;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\StreamInterface;
-use App\Models\SystemBlackList;
-use App\Const\ErrorCodeConst;
 
 class MiddlewareConfigurator
 {
