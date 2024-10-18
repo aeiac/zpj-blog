@@ -17,7 +17,6 @@ class SystemAdminPermissionController extends AdminController
      */
     public function getSelectAdminUsersList(Request $request, SystemAdminPermissionAuthServices $services): array
     {
-        // 用户列表-- 配置角色
         $input = $request->all();
         $paginateResult = $services->getSelectAdminUsersList($input);
         return $this->success($this->paginateToArray($paginateResult));

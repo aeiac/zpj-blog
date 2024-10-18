@@ -17,7 +17,10 @@ use App\Models\Systems\SystemAdminUsersRole;
 class AdminUsers extends Model
 {
     protected $table = 'admin_users';
+
     protected $primaryKey = 'id';
+
+    protected $hidden=['password'];
 
     public $timestamps = true;
 

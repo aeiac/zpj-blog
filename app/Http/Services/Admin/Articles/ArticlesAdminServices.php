@@ -6,6 +6,12 @@ use App\Models\Articles\Articlesr;
 
 class ArticlesAdminServices
 {
+
+    /**
+     * 获取管理员用户列表
+     * @param array $input
+     * @return array
+     */
     public function getSelectArticlesTable(array $input): array
     {
         $where = [];
