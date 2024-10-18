@@ -34,21 +34,39 @@ class SystemAdminPermissionAuthServices
     }
 
     /**
-     * 用户列表
+     * 管理员列表
      * @param array $input
      * @return array
      */
     public function getSelectAdminUsersList(array $input): array
     {
         $where = [];
-
+        if (isset($input['id']) && $input['id'] !== '') {
+            $where[] = ['id', '=', $input['id']];
+        }
+        if (isset($input['name']) && $input['name'] !== '') {
+            $where[] = ['name', 'like', '%' . $input['name'] . '%'];
+        }
+        if (isset($input['nickname']) && $input['nickname'] !== '') {
+            $where[] = ['nickname', 'like', '%' . $input['nickname'] . '%'];
+        }
+        if (isset($input['status']) && $input['status'] !== '') {
+            $where[] = ['status', '=', $input['status']];
+        } else {
+            $where[] = ['status', '=', 1];
+        }
+        if (isset($input['start_time']) && $input['start_time'] !== '') {
+            $where[] = ['created_at', '>=', $input['start_time']];
+        }
+        if (isset($input['end_time']) && $input['end_time'] !== '') {
+            $where[] = ['created_at', '<=', $input['end_time']];
+        }
         return AdminUsers::query()
             ->with('userRoles')
             ->where($where)
-            ->orderBy('id','desc')
+            ->orderBy('id', 'desc')
             ->paginate((int)$input['per_page'] ?: 10, ['*'])
             ->toArray();
-
     }
 
 }
