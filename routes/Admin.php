@@ -17,8 +17,14 @@ Route::prefix('system')->group(function () {
     });
 });
 
+// 权限管理模块
+Route::prefix('permission')->group(function () {
+    // 用户列表
+    Route::get('/users/list','SystemAdminPermissionController@getSelectAdminUsersList');
+});
+
 // 文章管理模块
 Route::prefix('article')->group(function () {
     Route::get('/list', 'ArticlesAdminController@list');
-    
+
 });

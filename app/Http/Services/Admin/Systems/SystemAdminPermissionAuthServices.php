@@ -2,12 +2,12 @@
 
 namespace App\Http\Services\Admin\Systems;
 
-use App\Http\Controllers\AdminController;
+use App\Models\AdminUsers;
 use App\Models\Systems\SystemAdminPermission;
 use App\Models\Systems\SystemAdminRolePermission;
 use App\Models\Systems\SystemAdminUsersRole;
 
-class SystemAdminPermissionAuthServices extends AdminController
+class SystemAdminPermissionAuthServices
 {
     /**
      * 查询用户角色权限
@@ -31,6 +31,24 @@ class SystemAdminPermissionAuthServices extends AdminController
             ->pluck('content')
             ->toArray();
         return !in_array($routerPath, $getAndPermissionResult);
+    }
+
+    /**
+     * 用户列表
+     * @param array $input
+     * @return array
+     */
+    public function getSelectAdminUsersList(array $input): array
+    {
+        $where = [];
+
+        return AdminUsers::query()
+            ->with('userRoles')
+            ->where($where)
+            ->orderBy('id','desc')
+            ->paginate((int)$input['per_page'] ?: 10, ['*'])
+            ->toArray();
+
     }
 
 }

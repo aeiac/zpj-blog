@@ -3,13 +3,12 @@
 namespace App\Http\Services\Admin;
 
 use App\Const\CacheConst;
-use App\Http\Controllers\Admin\loginAdminUsersController;
 use App\Models\AdminUsers;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-class LoginAdminUsersServices extends loginAdminUsersController
+class LoginAdminUsersServices
 {
     /**
      * Token时效

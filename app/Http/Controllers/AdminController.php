@@ -64,9 +64,9 @@ class AdminController extends Controller
         if ($adminUserId) {
             $this->adminUserInfo = AdminUsers::find($adminUserId);
         }
-        if ($this->systemAdminAuthPermission()) {
-            return $this->errorJson(400, '无此权限！');
-        }
+//        if ($this->systemAdminAuthPermission()) {
+//            return $this->errorJson(400, '无此权限！');
+//        }
     }
 
     /**

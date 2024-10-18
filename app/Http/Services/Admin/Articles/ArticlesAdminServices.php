@@ -2,10 +2,9 @@
 
 namespace App\Http\Services\Admin\Articles;
 
-use App\Http\Controllers\Admin\ArticlesAdminController;
 use App\Models\Articles\Articlesr;
 
-class ArticlesAdminServices extends ArticlesAdminController
+class ArticlesAdminServices
 {
     public function getSelectArticlesTable(array $input): array
     {
