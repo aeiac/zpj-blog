@@ -31,9 +31,9 @@ class SystemAdminServicesController extends AdminController
      */
     public function blackListSave(Request $request, SystemAdminServices $services): array
     {
-        $input=$request->all();
-        $savaResult=$services->savaBlackList($input);
-        return  $this->success($savaResult);
+        $input = $request->all();
+        $savaResult = $services->savaBlackList($input);
+        return $this->success($savaResult);
     }
 
 
