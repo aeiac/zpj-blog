@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Const;
+namespace App\Const\Admin;
 
 class CommonConst
 {

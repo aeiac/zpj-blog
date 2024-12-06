@@ -10,7 +10,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->use([
-            \App\Http\Middleware\GlobalFunMiddleware::class
+            \App\Http\Middleware\Admin\GlobalFunMiddleware::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

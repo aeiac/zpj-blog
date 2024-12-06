@@ -3,12 +3,12 @@
 
 namespace App\Utils;
 
-use App\Const\ErrorCodeConst;
+use App\Const\Admin\ErrorCodeConst;
+use App\Const\Admin\RedisKeyConst;
 use App\Models\Systems\SystemBlackList;
 use GuzzleHttp\Psr7\Utils;
 use Illuminate\Support\Facades\Redis;
 use Psr\Http\Message\StreamInterface;
-use App\Const\Admin\RedisKeyConst;
 
 class MiddlewareConfigurator
 {

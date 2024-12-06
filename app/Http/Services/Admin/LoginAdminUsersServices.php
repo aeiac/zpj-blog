@@ -2,7 +2,7 @@
 
 namespace App\Http\Services\Admin;
 
-use App\Const\CacheConst;
+use App\Const\Admin\CacheConst;
 use App\Models\AdminUsers;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
