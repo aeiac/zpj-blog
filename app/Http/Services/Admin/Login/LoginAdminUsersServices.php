@@ -3,12 +3,13 @@
 namespace App\Http\Services\Admin\Login;
 
 use App\Const\Admin\CacheConst;
+use App\Http\Services\Admin\BaseAdminServices;
 use App\Models\AdminUsers;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-class LoginAdminUsersServices
+class LoginAdminUsersServices extends BaseAdminServices
 {
     /**
      * 登录逻辑
@@ -81,7 +82,6 @@ class LoginAdminUsersServices
     public static function getToken(string $token): string
     {
         return Cache::get(self::getTokenKey($token));
-
     }
 
 }
