@@ -2,9 +2,9 @@
 
 namespace App\Models\Systems;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel;
 
-class SystemAdminRole extends Model
+class SystemAdminRole extends BaseModel
 {
     protected $table = 'system_admin_role';
 

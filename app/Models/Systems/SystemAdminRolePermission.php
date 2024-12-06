@@ -2,13 +2,9 @@
 
 namespace App\Models\Systems;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel;
 
-/**
- * @method static where(array $where)
- * @method static whereIn(string $string, $usersRoleResult)
- */
-class SystemAdminRolePermission extends Model
+class SystemAdminRolePermission extends BaseModel
 {
     protected $table = "system_admin_role_permission";
 

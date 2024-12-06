@@ -2,14 +2,12 @@
 
 namespace App\Models\Systems;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel;
 
-use \Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/**
- * @method static where(array $where)
- */
-class SystemAdminUsersRole extends Model
+
+class SystemAdminUsersRole extends BaseModel
 {
     protected $table = 'system_admin_users_role';
 

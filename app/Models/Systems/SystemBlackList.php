@@ -2,14 +2,9 @@
 
 namespace App\Models\Systems;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel;
 
-
-/**
- * @method static where($data)
- * @method static updateOrCreate(array $array, array $input)
- */
-class SystemBlackList extends Model
+class SystemBlackList extends BaseModel
 {
     const STATUS_ACTIVE = 1;
     const STATUS_INACTIVE = 0;

@@ -2,12 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-/**
- * @method static create(array $array)
- */
-class AdminUsersLog extends Model
+class AdminUsersLog extends BaseModel
 {
     protected $table = 'admin_users_log';
     protected $primaryKey = 'id';
