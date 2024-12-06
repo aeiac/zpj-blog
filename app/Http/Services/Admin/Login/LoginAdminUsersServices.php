@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services\Admin;
+namespace App\Http\Services\Admin\Login;
 
 use App\Const\Admin\CacheConst;
 use App\Models\AdminUsers;
@@ -11,11 +11,6 @@ use Illuminate\Support\Str;
 class LoginAdminUsersServices
 {
     /**
-     * Token时效
-     */
-    protected const TIMEOUT = 84600; // 秒
-
-    /**
      * 登录逻辑
      * @param array $input
      * @return mixed
@@ -24,10 +19,9 @@ class LoginAdminUsersServices
     {
         $adminUser = AdminUsers::where('name', $input['name'])
             ->first();
-        if (!$adminUser || !Hash::check($input['password'].$adminUser->salt, $adminUser->password)) {
+        if (!$adminUser || !Hash::check($input['password'] . $adminUser->salt, $adminUser->password)) {
             return [];
         }
-        $adminUser->makeHidden(['password']);
         $token = Str::random(60);
         self::setTokenKey($adminUser->id, $token);
         $adminUser->tokne = $token;
@@ -42,7 +36,7 @@ class LoginAdminUsersServices
      */
     public static function setTokenKey(string $adminUserId, string $token): void
     {
-        Cache::set(self::getTokenKey($token), $adminUserId, self::TIMEOUT);
+        Cache::set(self::getTokenKey($token), $adminUserId, CacheConst::ADMIN_TOKEN_TIMEOUT);
     }
 
     /**

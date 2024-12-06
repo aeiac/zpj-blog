@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BaseAdminController;
 use App\Http\Services\Admin\Systems\SystemAdminPermissionAuthServices;
 use Illuminate\Http\Request;
 
-class SystemAdminPermissionController extends AdminController
+class SystemBaseAdminPermissionController extends BaseAdminController
 {
 
     /**

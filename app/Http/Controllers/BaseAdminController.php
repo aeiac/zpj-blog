@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Const\Admin\CommonConst;
-use App\Http\Services\Admin\LoginAdminUsersServices;
+use App\Http\Services\Admin\Login\LoginAdminUsersServices;
 use App\Http\Services\Admin\Systems\SystemAdminPermissionAuthServices;
 use App\Models\AdminUsers;
 use App\Models\AdminUsersLog;
@@ -12,7 +12,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Request;
 use RuntimeException;
 
-class AdminController extends Controller
+class BaseAdminController extends Controller
 {
     /**
      * 存储管理员基本信息

@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\AdminController;
-use App\Http\Services\Admin\LoginAdminUsersServices;
+use App\Http\Controllers\BaseAdminController;
+use App\Http\Services\Admin\Login\LoginAdminUsersServices;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 
-class LoginAdminUsersController extends AdminController
+class LoginBaseAdminUsersController extends BaseAdminController
 {
     protected static array $excludedAuth = ['login'];
 

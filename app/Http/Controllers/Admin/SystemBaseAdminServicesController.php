@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BaseAdminController;
 use App\Http\Services\Admin\Systems\SystemAdminServices;
 use Illuminate\Http\Request;
 
-class SystemAdminServicesController extends AdminController
+class SystemBaseAdminServicesController extends BaseAdminController
 {
     protected static array $excludedAuth = [];
 

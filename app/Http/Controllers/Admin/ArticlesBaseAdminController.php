@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BaseAdminController;
 use App\Http\Services\Admin\Articles\ArticlesAdminServices;
 use Illuminate\Http\Request;
 
-class ArticlesAdminController extends AdminController
+class ArticlesBaseAdminController extends BaseAdminController
 {
     public function list(Request $request, ArticlesAdminServices $services)
     {
