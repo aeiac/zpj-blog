@@ -1,31 +1,11 @@
 <?php
 
-namespace App\Utils\Redis;
-use Illuminate\Support\Facades\Redis;
+namespace App\Const\Admin;
 
-class RedisCache
+class RedisKeyConst
 {
-    /**
-     * 设置 Redis 值
-     */
-    public static function set(string $key, $value, int $expiration = 3600)
-    {
-        Redis::set($key, $value, 'EX', $expiration);
-    }
+    // 黑名单列表
+    const ACCESS_BLACK_LIST_KEY = "access_black_list:%s";
+    const ACCESS_BLACK_LIST_KEY_EXPIRATION_TIME = 600;
 
-    /**
-     * 获取 Redis 值
-     */
-    public static function get(string $key)
-    {
-        return Redis::get($key);
-    }
-
-    /**
-     * 删除 Redis 值
-     */
-    public static function del(string $key): void
-    {
-        Redis::del($key);
-    }
 }
