@@ -36,13 +36,9 @@ class RouteServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->routes(function () {
-            Route::prefix('admin')
-                ->namespace($this->namespace . '\Admin')
-                ->middleware(AdminGlobalFunMiddleware::class)
+            Route::namespace($this->namespace . '\Admin')
                 ->group(base_path('routes/Admin.php'));
-
-            Route::prefix('v1')
-                ->namespace($this->namespace . '\V1')
+            Route::namespace($this->namespace . '\V1')
                 ->group(base_path('routes/V1.php'));
         });
 
