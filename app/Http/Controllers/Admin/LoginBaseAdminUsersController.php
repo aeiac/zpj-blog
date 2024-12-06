@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\BaseAdminController;
 use App\Http\Services\Admin\Login\LoginAdminUsersServices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\BaseAdminController;
 use App\Http\Services\Admin\Articles\ArticlesAdminServices;
 use Illuminate\Http\Request;
 

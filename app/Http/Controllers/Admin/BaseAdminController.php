@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Const\Admin\CommonConst;
 use App\Http\Services\Admin\Login\LoginAdminUsersServices;
 use App\Http\Services\Admin\Systems\SystemAdminPermissionAuthServices;
 use App\Models\AdminUsers;
 use App\Models\AdminUsersLog;
+use App\Utils\Response\AppResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Request;
@@ -16,9 +17,9 @@ class BaseAdminController extends Controller
 {
     /**
      * 存储管理员基本信息
-     * @var
+     * @var object
      */
-    protected $adminUserInfo;
+    protected object $adminUserInfo;
 
     /**
      * 无需校验登录方法
@@ -32,8 +33,15 @@ class BaseAdminController extends Controller
      */
     public string $accessToken = '';
 
-    public function __construct()
+    /**
+     * 应用级响应工具
+     * @var AppResponse
+     */
+    public AppResponse $appResponseUtils;
+
+    public function __construct(AppResponse $appResponse)
     {
+        $this->appResponseUtils = $appResponse;
         $this->accessToken = $this->getBearerToken();
     }
 
@@ -50,7 +58,7 @@ class BaseAdminController extends Controller
     /**
      * 鉴权初始化
      * @param $method
-     * @return array|bool|JsonResponse|void|null
+     * @return JsonResponse|void|null
      */
     private function initial($method)
     {
@@ -64,6 +72,7 @@ class BaseAdminController extends Controller
         if ($adminUserId) {
             $this->adminUserInfo = AdminUsers::find($adminUserId);
         }
+        // TODO 因未配置权限所以暂时关闭，超管无视所有权限
 //        if ($this->systemAdminAuthPermission()) {
 //            return $this->errorJson(400, '无此权限！');
 //        }
