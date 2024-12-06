@@ -11,7 +11,7 @@ class AdminUsers extends BaseModel
 
     protected $primaryKey = 'id';
 
-    protected $hidden = ['password'];
+    protected $hidden = ['password','salt'];
 
     public $timestamps = true;
 
