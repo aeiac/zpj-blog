@@ -25,7 +25,7 @@ class LoginAdminUsersServices extends BaseAdminServices
         }
         $token = Str::random(60);
         self::setTokenKey($adminUser->id, $token);
-        $adminUser->tokne = $token;
+        $adminUser->token = $token;
         return $adminUser;
     }
 
