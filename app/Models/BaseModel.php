@@ -1,0 +1,68 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder|static where($column, $operator = null, $value = null, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder|static whereIn($column, $values)
+ * @method static \Illuminate\Database\Eloquent\Builder|static whereNull($column)
+ * @method static \Illuminate\Database\Eloquent\Builder|static whereNotNull($column)
+ * @method static \Illuminate\Database\Eloquent\Builder|static whereBetween($column, array $values)
+ * @method static \Illuminate\Database\Eloquent\Builder|static whereNotBetween($column, array $values)
+ * @method static \Illuminate\Database\Eloquent\Builder|static orWhere($column, $operator = null, $value = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|static orWhereIn($column, $values)
+ * @method static \Illuminate\Database\Eloquent\Builder|static orWhereNull($column)
+ * @method static \Illuminate\Database\Eloquent\Builder|static orWhereNotNull($column)
+ * @method static \Illuminate\Database\Eloquent\Builder|static first()
+ * @method static \Illuminate\Database\Eloquent\Builder|static find($id)
+ * @method static \Illuminate\Database\Eloquent\Builder|static findOrFail($id)
+ * @method static \Illuminate\Database\Eloquent\Builder|static firstOrFail()
+ * @method static \Illuminate\Database\Eloquent\Builder|static firstOrCreate(array $attributes, array $values = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|static updateOrCreate(array $attributes, array $values = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|static create(array $attributes)
+ * @method static \Illuminate\Database\Eloquent\Builder|static insert(array $values)
+ * @method static \Illuminate\Database\Eloquent\Builder|static update(array $values)
+ * @method static \Illuminate\Database\Eloquent\Builder|static delete()
+ * @method static \Illuminate\Database\Eloquent\Builder|static truncate()
+ * @method static \Illuminate\Database\Eloquent\Builder|static softDeletes()
+ * @method static \Illuminate\Database\Eloquent\Builder|static withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|static withoutTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|static onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|static restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|static max($column)
+ * @method static \Illuminate\Database\Eloquent\Builder|static min($column)
+ * @method static \Illuminate\Database\Eloquent\Builder|static avg($column)
+ * @method static \Illuminate\Database\Eloquent\Builder|static sum($column)
+ * @method static \Illuminate\Database\Eloquent\Builder|static count()
+ * @method static \Illuminate\Database\Eloquent\Builder|static exists()
+ * @method static \Illuminate\Database\Eloquent\Builder|static doesntExist()
+ * @method static \Illuminate\Database\Eloquent\Builder|static paginate($perPage = 15, $columns = ['*'], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|static simplePaginate($perPage = 15, $columns = ['*'], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|static chunk($count, \Closure $callback)
+ * @method static \Illuminate\Database\Eloquent\Builder|static pluck($column, $key = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|static take($limit)
+ * @method static \Illuminate\Database\Eloquent\Builder|static skip($offset)
+ * @method static \Illuminate\Database\Eloquent\Builder|static offset($offset)
+ * @method static \Illuminate\Database\Eloquent\Builder|static orderBy($column, $direction = 'asc')
+ * @method static \Illuminate\Database\Eloquent\Builder|static orderByDesc($column)
+ * @method static \Illuminate\Database\Eloquent\Builder|static inRandomOrder($seed = '')
+ * @method static \Illuminate\Database\Eloquent\Builder|static latest($column = 'created_at')
+ * @method static \Illuminate\Database\Eloquent\Builder|static oldest($column = 'created_at')
+ * @method static \Illuminate\Database\Eloquent\Builder|static join($table, $first, $operator = null, $second = null, $type = 'inner', $where = false)
+ * @method static \Illuminate\Database\Eloquent\Builder|static leftJoin($table, $first, $operator = null, $second = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|static rightJoin($table, $first, $operator = null, $second = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|static crossJoin($table)
+ * @method static \Illuminate\Database\Eloquent\Builder|static whereRaw($sql, array $bindings = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|static orWhereRaw($sql, array $bindings = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|static havingRaw($sql, array $bindings = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|static orHavingRaw($sql, array $bindings = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|static when($value, \Closure $callback, \Closure $default = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|static whereExists(\Closure $callback, $boolean = 'and', $not = false)
+ * @method static \Illuminate\Database\Eloquent\Builder|static whereNotExists(\Closure $callback, $boolean = 'and')
+ */
+class BaseModel extends Model
+{
+
+}

@@ -2,9 +2,9 @@
 
 namespace App\Models\Articles;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel;
 
-class Articlesr extends  Model
+class Articlesr extends BaseModel
 {
     protected $table = 'articles';
     protected $primaryKey = 'id';
