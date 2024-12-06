@@ -24,7 +24,7 @@ class LoginAdminUsersServices
     {
         $adminUser = AdminUsers::where('name', $input['name'])
             ->first();
-        if (!$adminUser || !Hash::check($input['password'], $adminUser->password)) {
+        if (!$adminUser || !Hash::check($input['password'].$adminUser->salt, $adminUser->password)) {
             return [];
         }
         $adminUser->makeHidden(['password']);
