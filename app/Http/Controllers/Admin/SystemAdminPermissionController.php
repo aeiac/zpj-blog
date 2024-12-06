@@ -15,7 +15,7 @@ class SystemAdminPermissionController extends AdminController
      * @param SystemAdminPermissionAuthServices $services
      * @return array
      */
-    public function getSelectAdminUsersList(Request $request, SystemAdminPermissionAuthServices $services): array
+    public function adminUserList(Request $request, SystemAdminPermissionAuthServices $services): array
     {
         $input = $request->all();
         $paginateResult = $services->getSelectAdminUsersList($input);
