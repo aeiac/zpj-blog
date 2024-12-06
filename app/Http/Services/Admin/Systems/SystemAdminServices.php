@@ -2,8 +2,9 @@
 
 namespace App\Http\Services\Admin\Systems;
 
-use App\Models\Systems\SystemBlackList;
 use App\Const\Admin\RedisKeyConst;
+use App\Models\Systems\SystemBlackList;
+use App\Utils\Redis\RedisCache;
 use Illuminate\Support\Arr;
 
 class SystemAdminServices
@@ -67,7 +68,7 @@ class SystemAdminServices
         $input = Arr::only($input, ['ip_address', 'reason', 'status']);
         $component = SystemBlackList::updateOrCreate(['id' => $id], $input);
         if ($component->id && $input['status'] == SystemBlackList::STATUS_INACTIVE) {
-            RedisKeyConst::del(sprintf(RedisKeyConst::ACCESS_BLACK_LIST_KEY, $component->ip_address));
+            RedisCache::del(sprintf(RedisKeyConst::ACCESS_BLACK_LIST_KEY, $component->ip_address));
         }
         return ['message' => '操作成功！当前ID为：' . $component->id];
     }
