@@ -11,6 +11,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use App\Http\Middleware\Admin\GlobalFunMiddleware as AdminGlobalFunMiddleware ;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -37,6 +38,7 @@ class RouteServiceProvider extends ServiceProvider
         $this->routes(function () {
             Route::prefix('admin')
                 ->namespace($this->namespace . '\Admin')
+                ->middleware(AdminGlobalFunMiddleware::class)
                 ->group(base_path('routes/Admin.php'));
 
             Route::prefix('v1')
