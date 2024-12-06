@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 
 /**
- * @method static where()
+ * @method static where($data)
  * @method static updateOrCreate(array $array, array $input)
  */
 class SystemBlackList extends Model

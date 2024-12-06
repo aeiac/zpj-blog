@@ -6,7 +6,9 @@ namespace App\Utils;
 use App\Const\ErrorCodeConst;
 use App\Models\Systems\SystemBlackList;
 use GuzzleHttp\Psr7\Utils;
+use Illuminate\Support\Facades\Redis;
 use Psr\Http\Message\StreamInterface;
+use App\Const\Admin\RedisKeyConst;
 
 class MiddlewareConfigurator
 {
@@ -39,16 +41,22 @@ class MiddlewareConfigurator
      */
     public static function checkBackList(string $ip): array
     {
-        $result=[];
-        $ipInfo = SystemBlackList::where('ip_address', $ip)
-            ->where('status',1)
-            ->first();
-        if ($ipInfo) {
-            $result['code']=ErrorCodeConst::SYSTEM_BLACKLIST_RESTRICTED_ACCESS;
-            $result['message']=ErrorCodeConst::getErrorCodeConstMessages($result['code']);
+        $result = array();
+        $cacheKey = sprintf(RedisKeyConst::ACCESS_BLACK_LIST_KEY, $ip);
+        $ipCache = Redis::get($cacheKey);
+        if (!$ipCache) {
+            $ipInfo = SystemBlackList::where([
+                'ip_address'=>$ip,
+                'status'=>SystemBlackList::STATUS_ACTIVE
+            ])->first();
+            if ($ipInfo) {
+                Redis::set($cacheKey, $ipInfo->ip_address, 'EX', RedisKeyConst::ACCESS_BLACK_LIST_KEY_EXPIRATION_TIME);
+            }
+        }
+        if ($ipCache || $ipInfo) {
+            $result['code'] = ErrorCodeConst::SYSTEM_BLACKLIST_RESTRICTED_ACCESS;
+            $result['message'] = ErrorCodeConst::getErrorCodeConstMessages($result['code']);
         }
         return $result;
     }
-    // TODO 中间件功能
-
 }
