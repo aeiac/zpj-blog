@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Services\Admin\Auth\AuthAdminServices;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Validator;
+
 
 
 class AuthController extends BaseController
@@ -28,30 +28,23 @@ class AuthController extends BaseController
             'password' => 'required|string|max:16'
         ]);
         if ($validation->fails()) {
-            return $this->error(400, $validation->errors()->first());
-        }
-        if ($services->validateToken($this->accessToken)) {
-            return $this->error(400, '请勿重新登录！');
+            return $this->appResponse::error($validation->errors()->first());
         }
         $userBackResult = $services->loginAdminUser($input);
         if (empty($userBackResult)) {
-            return $this->error(400, '账号不存在或密码不正确！');
+            return $this->appResponse::error('账号不存在或密码不正确');
         }
-        return $this->appResponse::success($userBackResult);
+        return $userBackResult;
     }
 
     /**
      * 管理员账号登出
      *
-     * @param AuthAdminServices $services
-     *
      * @return array
      */
-    public function out(AuthAdminServices $services): array
+    public function out(): array
     {
-        if ($this->accessToken && $services->delToken($this->accessToken)) {
-            return $this->appResponse::success();
-        }
-        return $this->appResponse::error('登出异常');
+        $this->tokensUtils::clearAdminUserCache($this->adminUserInfo->id);
+        return $this->appResponse::success(null, '账户已退出');
     }
 }

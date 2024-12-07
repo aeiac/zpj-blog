@@ -12,11 +12,14 @@ class AppResponse
      */
     public static function success(mixed $data = null, string $message = 'success', int $code = 200): array
     {
-        return [
+        $response = [
             'code'    => $code,
             'message' => $message,
-            'data'    => $data,
         ];
+        if ($data !== null) {
+            $response['data'] = $data;
+        }
+        return $response;
     }
 
     /**

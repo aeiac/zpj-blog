@@ -12,7 +12,7 @@ use App\Utils\Response\HttpResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Request;
-use RuntimeException;
+use App\Utils\Admin\TokensUtils;
 
 class BaseController extends Controller
 {
@@ -46,10 +46,13 @@ class BaseController extends Controller
      */
     public AppResponse $appResponse;
 
-    public function __construct(HttpResponse $HttpResponse, AppResponse $appResponse)
+    public $tokensUtils;
+
+    public function __construct(HttpResponse $HttpResponse, AppResponse $appResponse,TokensUtils $TokensUtils)
     {
         $this->appResponse = $appResponse;
         $this->httpResponse = $HttpResponse;
+        $this->tokensUtils = $TokensUtils;
         $this->accessToken = $this->getBearerToken();
     }
 
@@ -79,13 +82,11 @@ class BaseController extends Controller
         if (!empty(array_intersect(['*', $method], static::$excludedAuth))) {
             return null;
         }
-        if (!$this->accessToken || !AuthAdminServices::validateToken($this->accessToken)) {
+        if (!$this->accessToken || !$this->tokensUtils::validateCache($this->accessToken, 'session')) {
             return $this->httpResponse::unauthorized();
         }
-        $adminUserId = AuthAdminServices::getToken($this->accessToken);
-        if ($adminUserId) {
-            $this->adminUserInfo = AdminUsers::find($adminUserId);
-        }
+        $adminUserInfo = $this->tokensUtils::getCache($this->accessToken, 'session');
+        $this->adminUserInfo = json_decode($adminUserInfo);
         // TODO 因未配置权限所以暂时关闭，超管无视所有权限
 //        if ($this->systemAdminAuthPermission()) {
 //            return $this->errorJson(400, '无此权限！');

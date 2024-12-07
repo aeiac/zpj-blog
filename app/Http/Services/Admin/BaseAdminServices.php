@@ -10,10 +10,10 @@ class BaseAdminServices
      * 应用级响应工具
      * @var AppResponse
      */
-    public AppResponse $appResponseUtils;
+    public AppResponse $appResponse;
 
     public function __construct(AppResponse $appResponse)
     {
-        $this->appResponseUtils = $appResponse;
+        $this->appResponse = $appResponse;
     }
 }
