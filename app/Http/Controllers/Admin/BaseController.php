@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Const\Admin\CommonConst;
-use App\Http\Services\Admin\Login\LoginAdminUsersServices;
-use App\Http\Services\Admin\Systems\SystemAdminPermissionAuthServices;
+use App\Http\Services\Admin\Auth\AuthAdminServices;
+use App\Http\Services\Admin\Permission\PermissionServices;
 use App\Models\AdminUsers;
 use App\Models\AdminUsersLog;
 use App\Utils\Response\AppResponse;
@@ -13,7 +13,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Request;
 use RuntimeException;
 
-class BaseAdminController extends Controller
+class BaseController extends Controller
 {
     /**
      * 存储管理员基本信息
@@ -65,10 +65,10 @@ class BaseAdminController extends Controller
         if (!empty(array_intersect(['*', $method], static::$excludedAuth))) {
             return null;
         }
-        if (!$this->accessToken || !LoginAdminUsersServices::validateToken($this->accessToken)) {
+        if (!$this->accessToken || !AuthAdminServices::validateToken($this->accessToken)) {
             return $this->errorJson(400, '请求未授权');
         }
-        $adminUserId = LoginAdminUsersServices::getToken($this->accessToken);
+        $adminUserId = AuthAdminServices::getToken($this->accessToken);
         if ($adminUserId) {
             $this->adminUserInfo = AdminUsers::find($adminUserId);
         }
@@ -176,6 +176,6 @@ class BaseAdminController extends Controller
      */
     public function systemAdminAuthPermission(): bool
     {
-        return SystemAdminPermissionAuthServices::getSelectRoleAndPermissionInner($this->adminUserInfo, Request::path());
+        return PermissionServices::getSelectRoleAndPermissionInner($this->adminUserInfo, Request::path());
     }
 }

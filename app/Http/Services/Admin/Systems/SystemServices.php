@@ -7,7 +7,7 @@ use App\Models\Systems\SystemBlackList;
 use App\Utils\Redis\RedisCache;
 use Illuminate\Support\Arr;
 
-class SystemAdminServices
+class SystemServices
 {
 
     /**

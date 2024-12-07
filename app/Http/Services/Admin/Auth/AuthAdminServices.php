@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services\Admin\Login;
+namespace App\Http\Services\Admin\Auth;
 
 use App\Const\Admin\CacheConst;
 use App\Http\Services\Admin\BaseAdminServices;
@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-class LoginAdminUsersServices extends BaseAdminServices
+class AuthAdminServices extends BaseAdminServices
 {
     /**
      * 登录逻辑

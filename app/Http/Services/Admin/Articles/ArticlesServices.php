@@ -4,7 +4,7 @@ namespace App\Http\Services\Admin\Articles;
 
 use App\Models\Articles\Articlesr;
 
-class ArticlesAdminServices
+class ArticlesServices
 {
 
     /**

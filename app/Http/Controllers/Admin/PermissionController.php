@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Services\Admin\Systems\SystemAdminPermissionAuthServices;
+use App\Http\Services\Admin\Permission\PermissionServices;
 use Illuminate\Http\Request;
 
-class SystemBaseAdminPermissionController extends BaseAdminController
+class PermissionController extends BaseController
 {
 
     /**
      * 权限管理-用户列表
+     *
      * @param Request $request
-     * @param SystemAdminPermissionAuthServices $services
+     * @param PermissionServices $services
+     *
      * @return array
      */
-    public function adminUserList(Request $request, SystemAdminPermissionAuthServices $services): array
+    public function adminUserList(Request $request, PermissionServices $services): array
     {
         $input = $request->all();
         $paginateResult = $services->getSelectAdminUsersList($input);

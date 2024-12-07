@@ -2,22 +2,25 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Services\Admin\Login\LoginAdminUsersServices;
+use App\Http\Services\Admin\Auth\AuthAdminServices;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Validator;
 
 
-class LoginBaseAdminUsersController extends BaseAdminController
+class AuthController extends BaseController
 {
     protected static array $excludedAuth = ['login'];
 
     /**
      * 后台管理员登录
+     *
      * @param Request $request
-     * @param LoginAdminUsersServices $services
+     * @param AuthAdminServices $services
+     *
      * @return array
      */
-    public function login(Request $request, LoginAdminUsersServices $services): array
+    public function login(Request $request, AuthAdminServices $services): array
     {
         $input = $request->post();
         $validation = Validator::make($input, [
@@ -39,10 +42,12 @@ class LoginBaseAdminUsersController extends BaseAdminController
 
     /**
      * 管理员账号登出
-     * @param LoginAdminUsersServices $services
+     *
+     * @param AuthAdminServices $services
+     *
      * @return array
      */
-    public function out(LoginAdminUsersServices $services): array
+    public function out(AuthAdminServices $services): array
     {
         if ($this->accessToken && $services->delToken($this->accessToken)) {
             return $this->success();

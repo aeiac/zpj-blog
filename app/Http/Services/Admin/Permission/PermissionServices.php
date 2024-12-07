@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Services\Admin\Systems;
+namespace App\Http\Services\Admin\Permission;
 
 use App\Models\AdminUsers;
 use App\Models\Systems\SystemAdminPermission;
 use App\Models\Systems\SystemAdminRolePermission;
 use App\Models\Systems\SystemAdminUsersRole;
 
-class SystemAdminPermissionAuthServices
+class PermissionServices
 {
     /**
      * 查询用户角色权限

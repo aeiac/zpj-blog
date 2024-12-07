@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Services\Admin\Articles\ArticlesAdminServices;
+use App\Http\Services\Admin\Articles\ArticlesServices;
 use Illuminate\Http\Request;
 
-class ArticlesBaseAdminController extends BaseAdminController
+class ArticlesController extends BaseController
 {
-    public function list(Request $request, ArticlesAdminServices $services)
+    public function list(Request $request, ArticlesServices $services): array
     {
         $input = $request->all();
         $paginateResult = $services->getSelectArticlesTable($input);

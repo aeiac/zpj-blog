@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Services\Admin\Systems\SystemAdminServices;
+use App\Http\Services\Admin\Systems\SystemServices;
 use Illuminate\Http\Request;
 
-class SystemBaseAdminServicesController extends BaseAdminController
+class SystemServicesController extends BaseController
 {
     protected static array $excludedAuth = [];
 
     /**
      * 封禁IP列表
+     *
      * @param Request $request
-     * @param SystemAdminServices $services
+     * @param SystemServices $services
+     *
      * @return array
      */
-    public function blackList(Request $request, SystemAdminServices $services): array
+    public function blackList(Request $request, SystemServices $services): array
     {
         $input = $request->all();
         $paginateResult = $services->getSelectBlackList($input);
@@ -24,11 +26,13 @@ class SystemBaseAdminServicesController extends BaseAdminController
 
     /**
      * 封禁IP操作
+     *
      * @param Request $request
-     * @param SystemAdminServices $services
+     * @param SystemServices $services
+     *
      * @return array
      */
-    public function blackListSave(Request $request, SystemAdminServices $services): array
+    public function blackListSave(Request $request, SystemServices $services): array
     {
         $input = $request->all();
         $savaResult = $services->savaBlackList($input);
