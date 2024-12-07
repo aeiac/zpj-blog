@@ -13,17 +13,20 @@ class AuthAdminServices extends BaseAdminServices
 {
     /**
      * 登录逻辑
+     *
      * @param array $input
+     *
      * @return mixed
      */
     public function loginAdminUser(array $input): mixed
     {
         $adminUser = AdminUsers::where('name', $input['name'])
             ->first();
-        if (!$adminUser || !Hash::check($input['password'] . $adminUser->salt, $adminUser->password)) {
+        if (!$adminUser || !Hash::check($input['password'] . $adminUser->salt, $adminUser->password) && $adminUser != AdminUsers::STATUS_INACTIVE) {
             return [];
         }
         $token = Str::random(60);
+        $adminUser->makeHidden(['created_at', 'updated_at']);
         self::setTokenKey($adminUser->id, $token);
         $adminUser->token = $token;
         return $adminUser;
@@ -31,8 +34,10 @@ class AuthAdminServices extends BaseAdminServices
 
     /**
      * 设置Token缓存健值
+     *
      * @param string $adminUserId
      * @param string $token
+     *
      * @return void
      */
     public static function setTokenKey(string $adminUserId, string $token): void
@@ -42,7 +47,9 @@ class AuthAdminServices extends BaseAdminServices
 
     /**
      * 获取管理员Token缓存键名
+     *
      * @param string $token
+     *
      * @return string
      */
     public static function getTokenKey(string $token): string
@@ -52,7 +59,9 @@ class AuthAdminServices extends BaseAdminServices
 
     /**
      * 删除管理员Token
+     *
      * @param string $token
+     *
      * @return bool
      */
     public static function delToken(string $token): bool
@@ -66,7 +75,9 @@ class AuthAdminServices extends BaseAdminServices
 
     /**
      * 验证Token的有效性
+     *
      * @param string $token
+     *
      * @return bool
      */
     public static function validateToken(string $token): bool
@@ -76,7 +87,9 @@ class AuthAdminServices extends BaseAdminServices
 
     /**
      * 获取当前Token
+     *
      * @param string $token
+     *
      * @return string
      */
     public static function getToken(string $token): string

@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AdminUsers extends BaseModel
 {
+    const STATUS_ACTIVE = 1;
+    const STATUS_INACTIVE = 0;
+
     protected $table = 'blog_admin_users';
 
     protected $primaryKey = 'id';
