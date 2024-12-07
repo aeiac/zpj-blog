@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('articles', function (Blueprint $table) {
+        Schema::create('blog_articles', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('article_id')->comment('文章ID');
             $table->string('title', 255)->comment('文章标题');

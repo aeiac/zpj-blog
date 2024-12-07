@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('system_admin_users_role', function (Blueprint $table) {
+        Schema::create('blog_admin_users_role', function (Blueprint $table) {
             $table->id()->comment('ID');
             $table->unsignedInteger('users_id')->nullable(false)->comment('用户ID');
             $table->unsignedInteger('role_id')->nullable(false)->comment('角色ID');

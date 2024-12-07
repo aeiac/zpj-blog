@@ -3,9 +3,9 @@
 namespace App\Http\Services\Admin\Permission;
 
 use App\Models\AdminUsers;
-use App\Models\Systems\SystemAdminPermission;
-use App\Models\Systems\SystemAdminRolePermission;
-use App\Models\Systems\SystemAdminUsersRole;
+use App\Models\Permission\AdminPermission;
+use App\Models\Permission\AdminRolePermission;
+use App\Models\Permission\AdminUsersRole;
 
 class PermissionServices
 {
@@ -21,13 +21,13 @@ class PermissionServices
         if (isset($userInfo->id) && $userInfo->id !== '') {
             $where[] = ['users_id', '=', $userInfo->id];
         }
-        $usersRoleResult = SystemAdminUsersRole::where($where)
+        $usersRoleResult = AdminUsersRole::where($where)
             ->pluck('role_id')
             ->toArray();
-        $getRoleAndPermissionResult = SystemAdminRolePermission::whereIn('role_id', $usersRoleResult)
+        $getRoleAndPermissionResult = AdminRolePermission::whereIn('role_id', $usersRoleResult)
             ->pluck('permission_id')
             ->toArray();
-        $getAndPermissionResult = SystemAdminPermission::whereIn('id', $getRoleAndPermissionResult)
+        $getAndPermissionResult = AdminPermission::whereIn('id', $getRoleAndPermissionResult)
             ->pluck('content')
             ->toArray();
         return !in_array($routerPath, $getAndPermissionResult);

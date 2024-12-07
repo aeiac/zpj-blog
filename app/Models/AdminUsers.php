@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Permission\AdminUsersRole;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\Systems\SystemAdminUsersRole;
 
 class AdminUsers extends BaseModel
 {
-    protected $table = 'admin_users';
+    protected $table = 'blog_admin_users';
 
     protected $primaryKey = 'id';
 
@@ -17,7 +17,7 @@ class AdminUsers extends BaseModel
 
     public function userRoles(): HasMany
     {
-        return $this->hasMany(SystemAdminUsersRole::class, 'users_id')
+        return $this->hasMany(AdminUsersRole::class, 'users_id')
             ->select(['id', 'users_id', 'role_id'])
             ->with('roleDetail');
     }

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('system_blacklist', function (Blueprint $table) {
+        Schema::create('blog_system_blacklist', function (Blueprint $table) {
             $table->id()->comment('表id');
             $table->string('ip_address',255)->unique()->nullable(false)->comment('IP地址');
             $table->string('reason',255)->nullable(false)->comment('封禁IP');

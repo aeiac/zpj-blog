@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         //php artisan make:migration create_system_blacklist_table
-        Schema::create('admin_users_log', function (Blueprint $table) {
+        Schema::create('blog_admin_users_log', function (Blueprint $table) {
             $table->id()->comment('表id');
             $table->unsignedInteger('admin_users_id')->nullable(false)->comment('管理员id');
             $table->string('path')->nullable(false)->comment('请求来源');

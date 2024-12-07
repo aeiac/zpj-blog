@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('articles_type', function (Blueprint $table) {
+        Schema::create('blog_articles_type', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger ('f_id')->comment('分类父级ID');
             $table->string('type_name')->nullable()->comment('分类名称');

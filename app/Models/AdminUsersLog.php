@@ -4,7 +4,7 @@ namespace App\Models;
 
 class AdminUsersLog extends BaseModel
 {
-    protected $table = 'admin_users_log';
+    protected $table = 'blog_admin_users_log';
     protected $primaryKey = 'id';
 
     protected $fillable = [

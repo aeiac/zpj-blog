@@ -10,20 +10,16 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('system_admin_permission', function (Blueprint $table) {
+        Schema::create('blog_admin_role_permission', function (Blueprint $table) {
             $table->id()->comment('ID');
-            $table->unsignedInteger('f_id')->nullable(true)->comment('父级权限');
-            $table->unsignedInteger('code')->nullable(false)->comment('权限码');
-            $table->string('content')->nullable(false)->comment('权限内容');
-            $table->string('name')->nullable(false)->comment('权限名称');
-            $table->string('remark')->nullable(true)->comment('备注');
+            $table->unsignedInteger('role_id')->nullable(false)->comment('角色ID');
+            $table->unsignedInteger('permission_id')->nullable(false)->comment('权限ID');
             $table->unsignedInteger('created_by')->nullable(false)->comment('创建人');
             $table->unsignedInteger('updated_by')->nullable(false)->comment('更新人');
             $table->enum('status', ['active', 'inactive'])->default('active')->comment('分类状态:(使用:active, 禁用:inactive)');
-
             $table->timestamps();
 
-            $table->comment('系统后台权限表');
+            $table->comment('系统后台角色关联权限表');
         });
     }
 
@@ -32,6 +28,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('system_admin_permission');
+        Schema::dropIfExists('system_admin_role_permission');
     }
 };

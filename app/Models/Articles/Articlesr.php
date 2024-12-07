@@ -6,7 +6,7 @@ use App\Models\BaseModel;
 
 class Articlesr extends BaseModel
 {
-    protected $table = 'articles';
+    protected $table = 'blog_articles';
     protected $primaryKey = 'id';
     public $timestamps = true;
 

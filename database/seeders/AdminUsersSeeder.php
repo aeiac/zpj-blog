@@ -17,7 +17,7 @@ class AdminUsersSeeder extends Seeder
     public function run(): void
     {
         $salt = Str::random();
-        DB::table('admin_users')->insert([
+        DB::table('blog_admin_users')->insert([
             'name' => env('ADMIN_USER_NAME', 'sa'),
             'password' => Hash::make(env('ADMIN_USER_PASSWORD', '123456') . $salt),
             'nickname' => env('ADMIN_USER_NICKNAME', '超级管理员'),
