@@ -44,11 +44,11 @@ class BaseController extends Controller
      * 应用级响应工具
      * @var AppResponse
      */
-    public AppResponse $appResponseUtils;
+    public AppResponse $appResponse;
 
     public function __construct(HttpResponse $HttpResponse, AppResponse $appResponse)
     {
-        $this->appResponseUtils = $appResponse;
+        $this->appResponse = $appResponse;
         $this->httpResponse = $HttpResponse;
         $this->accessToken = $this->getBearerToken();
     }
@@ -90,51 +90,6 @@ class BaseController extends Controller
 //        if ($this->systemAdminAuthPermission()) {
 //            return $this->errorJson(400, '无此权限！');
 //        }
-    }
-
-    /**
-     * 输出成功结果
-     *
-     * @param array|mixed $data
-     * @param string $message
-     * @param int $code
-     *
-     * @return array
-     */
-    public function success(mixed $data = [], string $message = 'success', int $code = 200): array
-    {
-        if ($code < 200 || $code >= 300) {
-            throw new RuntimeException('success code should between 200 and 300, ' . $code . ' given');
-        }
-        return [
-            'code' => $code,
-            'message' => $message,
-            'data' => $data
-        ];
-    }
-
-    /**
-     * 输出失败结果
-     *
-     * @param int $code
-     * @param string $message
-     *
-     * @return array
-     */
-    public function error(int $code, string $message): array
-    {
-        return [
-            'code' => $code,
-            'message' => $message
-        ];
-    }
-
-    public function errorJson(int $code, string $message)
-    {
-        return response()->json([
-            'code' => $code,
-            'message' => $message
-        ]);
     }
 
     /**

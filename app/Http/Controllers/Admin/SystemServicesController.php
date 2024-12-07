@@ -21,7 +21,7 @@ class SystemServicesController extends BaseController
     {
         $input = $request->all();
         $paginateResult = $services->getSelectBlackList($input);
-        return $this->success($this->paginateToArray($paginateResult));
+        return $this->appResponse::success($paginateResult);
     }
 
     /**
@@ -36,7 +36,7 @@ class SystemServicesController extends BaseController
     {
         $input = $request->all();
         $savaResult = $services->savaBlackList($input);
-        return $this->success($savaResult);
+        return $this->appResponse::success($savaResult);
     }
 
 

@@ -37,7 +37,7 @@ class AuthController extends BaseController
         if (empty($userBackResult)) {
             return $this->error(400, '账号不存在或密码不正确！');
         }
-        return $this->success($userBackResult);
+        return $this->appResponse::success($userBackResult);
     }
 
     /**
@@ -50,8 +50,8 @@ class AuthController extends BaseController
     public function out(AuthAdminServices $services): array
     {
         if ($this->accessToken && $services->delToken($this->accessToken)) {
-            return $this->success();
+            return $this->appResponse::success();
         }
-        return $this->error(400, '登出异常');
+        return $this->appResponse::error('登出异常');
     }
 }

@@ -11,6 +11,6 @@ class ArticlesController extends BaseController
     {
         $input = $request->all();
         $paginateResult = $services->getSelectArticlesTable($input);
-        return $this->success($this->paginateToArray($paginateResult));
+        return $this->appResponse::success($this->paginateToArray($paginateResult));
     }
 }
