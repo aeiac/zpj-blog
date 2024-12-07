@@ -22,7 +22,7 @@ class AuthAdminServices extends BaseAdminServices
     {
         $adminUser = AdminUsers::where('name', $input['name'])
             ->first();
-        if (!$adminUser || !Hash::check($input['password'] . $adminUser->salt, $adminUser->password) || $adminUser != AdminUsers::STATUS_INACTIVE) {
+        if (!$adminUser || !Hash::check($input['password'] . $adminUser->salt, $adminUser->password) || $adminUser->status == AdminUsers::STATUS_INACTIVE) {
             return [];
         }
         $token = Str::random(60);

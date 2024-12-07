@@ -8,6 +8,7 @@ use App\Http\Services\Admin\Permission\PermissionServices;
 use App\Models\AdminUsers;
 use App\Models\AdminUsersLog;
 use App\Utils\Response\AppResponse;
+use App\Utils\Response\HttpResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Request;
@@ -34,14 +35,21 @@ class BaseController extends Controller
     public string $accessToken = '';
 
     /**
+     * 网络级响应工具
+     * @var HttpResponse
+     */
+    protected HttpResponse $httpResponse;
+
+    /**
      * 应用级响应工具
      * @var AppResponse
      */
     public AppResponse $appResponseUtils;
 
-    public function __construct(AppResponse $appResponse)
+    public function __construct(HttpResponse $HttpResponse, AppResponse $appResponse)
     {
         $this->appResponseUtils = $appResponse;
+        $this->httpResponse = $HttpResponse;
         $this->accessToken = $this->getBearerToken();
     }
 
@@ -51,13 +59,19 @@ class BaseController extends Controller
         if ($response instanceof JsonResponse) {
             return $response;
         }
+        if (!method_exists($this, $method)) {
+            return httpResponse::error('未知请求', 404);
+        }
         $this->addAdminUsersLog();
-        return parent::callAction($method, $parameters);
+        $result = parent::callAction($method, $parameters);
+        return httpResponse::success($result);
     }
 
     /**
      * 鉴权初始化
+     *
      * @param $method
+     *
      * @return JsonResponse|void|null
      */
     private function initial($method)
@@ -66,7 +80,7 @@ class BaseController extends Controller
             return null;
         }
         if (!$this->accessToken || !AuthAdminServices::validateToken($this->accessToken)) {
-            return $this->errorJson(400, '请求未授权');
+            return $this->httpResponse::unauthorized();
         }
         $adminUserId = AuthAdminServices::getToken($this->accessToken);
         if ($adminUserId) {
@@ -80,9 +94,11 @@ class BaseController extends Controller
 
     /**
      * 输出成功结果
+     *
      * @param array|mixed $data
      * @param string $message
      * @param int $code
+     *
      * @return array
      */
     public function success(mixed $data = [], string $message = 'success', int $code = 200): array
@@ -99,8 +115,10 @@ class BaseController extends Controller
 
     /**
      * 输出失败结果
+     *
      * @param int $code
      * @param string $message
+     *
      * @return array
      */
     public function error(int $code, string $message): array
@@ -156,7 +174,9 @@ class BaseController extends Controller
 
     /**
      * 过滤分页参数
+     *
      * @param array $params
+     *
      * @return array
      */
     public function paginateToArray(array $params): array
