@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('blog_admin_permission', function (Blueprint $table) {
             $table->id()->comment('ID');
             $table->unsignedInteger('f_id')->nullable(true)->comment('父级权限');
-            $table->unsignedInteger('code')->nullable(false)->comment('权限码');
+            $table->string('code',9)->nullable(false)->comment('权限码');
             $table->string('content')->nullable(false)->comment('权限内容');
             $table->string('name')->nullable(false)->comment('权限名称');
             $table->string('remark')->nullable(true)->comment('备注');

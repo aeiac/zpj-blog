@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\SystemServicesController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ArticlesController;
+use App\Http\Controllers\Admin\UtilsController;
 use App\Http\Middleware\Admin\GlobalFunMiddleware as AdminGlobalFunMiddleware;
 
 Route::prefix('admin')->name('admin.')->middleware([AdminGlobalFunMiddleware::class])->group(function () {
@@ -26,8 +27,8 @@ Route::prefix('admin')->name('admin.')->middleware([AdminGlobalFunMiddleware::cl
 
     // 权限管理模块
     Route::prefix('permission')->name('permission.')->group(function () {
-        // 管理员管理
-        Route::get('/admin/users/list', [PermissionController::class, 'adminUserList'])->name('admin.users.list');
+        // 管理员列表
+        Route::get('/admins', [PermissionController::class, 'admins'])->name('admins');
     });
 
     // 文章管理模块
@@ -41,7 +42,7 @@ Route::prefix('admin')->name('admin.')->middleware([AdminGlobalFunMiddleware::cl
         // 生成功能
         Route::prefix('generate')->name('generate.')->group(function () {
             // 生成权限
-            Route::get('/permission', [ArticlesController::class, 'permission'])->name('permission');
+            Route::get('/permission', [UtilsController::class, 'permission'])->name('permission');
         });
     });
 

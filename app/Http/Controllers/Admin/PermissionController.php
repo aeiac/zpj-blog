@@ -16,7 +16,7 @@ class PermissionController extends BaseController
      *
      * @return array
      */
-    public function adminUserList(Request $request, PermissionServices $services): array
+    public function admins(Request $request, PermissionServices $services): array
     {
         $input = $request->all();
         $paginateResult = $services->getSelectAdminUsersList($input);
