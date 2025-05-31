@@ -41,9 +41,9 @@ class UtilsServices extends BaseAdminServices
         }
         $insertResult = AdminPermission::insert($permissions);
         if (!$insertResult) {
-            return $this->appResponse::error('生权限成失败');
+            return ['data' => null, 'msg' => '权限生成失败'];
         }
-        return $this->appResponse::success(null, '权限生成成功');
+        return ['data' => null, 'msg' => '权限生成成功'];
     }
 }
 

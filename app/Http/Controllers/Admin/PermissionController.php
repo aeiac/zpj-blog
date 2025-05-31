@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Services\Admin\Permission\PermissionServices;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class PermissionController extends BaseController
 {
@@ -14,9 +15,9 @@ class PermissionController extends BaseController
      * @param Request $request
      * @param PermissionServices $services
      *
-     * @return array
+     * @return JsonResponse
      */
-    public function admins(Request $request, PermissionServices $services): array
+    public function admins(Request $request, PermissionServices $services): JsonResponse
     {
         $input = $request->all();
         $paginateResult = $services->getSelectAdminUsersList($input);

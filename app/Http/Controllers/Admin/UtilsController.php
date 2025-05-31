@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Services\Admin\Utils\UtilsServices;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class UtilsController extends BaseController
 {
@@ -21,13 +22,13 @@ class UtilsController extends BaseController
      * @param Request $request
      * @param UtilsServices $services
      *
-     * @return array
+     * @return JsonResponse
      */
-    public function permission(Request $request, UtilsServices $services): array
+    public function permission(Request $request, UtilsServices $services): JsonResponse
     {
         $params=$request->all();
         $result=$services->generatePermission($params,$this->adminUserInfo);
-        return $result;
+        return $this->appResponse::success($result);
     }
 
 }

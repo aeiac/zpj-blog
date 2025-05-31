@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Services\Admin\Auth\AuthAdminServices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 
 class AuthController extends BaseController
@@ -18,9 +18,9 @@ class AuthController extends BaseController
      * @param Request $request
      * @param AuthAdminServices $services
      *
-     * @return array
+     * @return JsonResponse
      */
-    public function login(Request $request, AuthAdminServices $services): array
+    public function login(Request $request, AuthAdminServices $services): JsonResponse
     {
         $input = $request->post();
         $validation = Validator::make($input, [
@@ -28,11 +28,11 @@ class AuthController extends BaseController
             'password' => 'required|string|max:16'
         ]);
         if ($validation->fails()) {
-            return $this->appResponse::error($validation->errors()->first());
+            return $this->appResponse::error('401',$validation->errors()->first());
         }
         $userBackResult = $services->loginAdminUser($input);
         if (empty($userBackResult)) {
-            return $this->appResponse::error('账号不存在或密码不正确');
+            return $this->appResponse::error('400','账号不存在或密码不正确');
         }
         return $userBackResult;
     }
@@ -40,9 +40,9 @@ class AuthController extends BaseController
     /**
      * 管理员账号登出
      *
-     * @return array
+     * @return JsonResponse
      */
-    public function out(): array
+    public function out(): JsonResponse
     {
         $this->tokensUtils::clearAdminUserCache($this->adminUserInfo->id);
         return $this->appResponse::success(null, '账户已退出');

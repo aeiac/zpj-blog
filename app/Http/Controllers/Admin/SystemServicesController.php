@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Services\Admin\Systems\SystemServices;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class SystemServicesController extends BaseController
 {
@@ -15,9 +16,9 @@ class SystemServicesController extends BaseController
      * @param Request $request
      * @param SystemServices $services
      *
-     * @return array
+     * @return JsonResponse
      */
-    public function blackList(Request $request, SystemServices $services): array
+    public function blackList(Request $request, SystemServices $services): JsonResponse
     {
         $input = $request->all();
         $paginateResult = $services->getSelectBlackList($input);
@@ -30,9 +31,9 @@ class SystemServicesController extends BaseController
      * @param Request $request
      * @param SystemServices $services
      *
-     * @return array
+     * @return JsonResponse
      */
-    public function blackListSave(Request $request, SystemServices $services): array
+    public function blackListSave(Request $request, SystemServices $services): JsonResponse
     {
         $input = $request->all();
         $savaResult = $services->savaBlackList($input);

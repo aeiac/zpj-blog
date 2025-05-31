@@ -48,11 +48,11 @@ class BaseController extends Controller
 
     public $tokensUtils;
 
-    public function __construct(HttpResponse $HttpResponse, AppResponse $appResponse,TokensUtils $TokensUtils)
+    public function __construct(HttpResponse $httpResponse, AppResponse $appResponse,TokensUtils $tokensUtils)
     {
         $this->appResponse = $appResponse;
-        $this->httpResponse = $HttpResponse;
-        $this->tokensUtils = $TokensUtils;
+        $this->httpResponse = $httpResponse;
+        $this->tokensUtils = $tokensUtils;
         $this->accessToken = $this->getBearerToken();
     }
 
