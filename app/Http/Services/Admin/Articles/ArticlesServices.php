@@ -3,8 +3,9 @@
 namespace App\Http\Services\Admin\Articles;
 
 use App\Models\Articles\Articlesr;
+use App\Http\Services\Admin\BaseAdminServices;
 
-class ArticlesServices
+class ArticlesServices extends BaseAdminServices
 {
 
     /**
@@ -14,6 +15,7 @@ class ArticlesServices
      */
     public function getSelectArticlesTable(array $input): array
     {
+        $data = [];
         $where = [];
         if (isset($input['title']) && $input['title'] !== '') {
             $where[] = ['title', 'like', '%' . $input['title'] . '%'];
@@ -36,9 +38,12 @@ class ArticlesServices
         if (isset($input['end_time']) && $input['end_time'] !== '') {
             $where[] = ['created_at', '<=', $input['end_time']];
         }
-        return Articlesr::where($where)
-            ->orderBY('created_at', 'desc')
-            ->paginate((int)$input['per_page'] ?: 10, ['*'])
-            ->toArray();
+        $data['articles_info'] = $this->paginateToArray(
+            Articlesr::where($where)
+                ->orderByDesc('created_at')
+                ->paginate($input['per_page'] ?? 10)
+                ->toArray()
+        );
+        return $this->appResponse::successToArray($data);
     }
 }

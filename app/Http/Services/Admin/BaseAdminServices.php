@@ -16,4 +16,22 @@ class BaseAdminServices
     {
         $this->appResponse = $appResponse;
     }
+
+    /**
+     * 过滤分页参数
+     *
+     * @param array $params
+     *
+     * @return array
+     */
+    public function paginateToArray(array $params): array
+    {
+        return [
+            'data' => $params['data'],                // 当前页数据
+            'total' => $params['total'],              // 总记录数
+            'per_page' => $params['per_page'],        // 每页记录数
+            'current_page' => $params['current_page'],// 当前页码
+            'last_page' => $params['last_page']       // 最后一页
+        ];
+    }
 }

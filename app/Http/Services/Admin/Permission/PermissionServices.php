@@ -2,12 +2,13 @@
 
 namespace App\Http\Services\Admin\Permission;
 
+use App\Http\Services\Admin\BaseAdminServices;
 use App\Models\AdminUsers;
 use App\Models\Permission\AdminPermission;
 use App\Models\Permission\AdminRolePermission;
 use App\Models\Permission\AdminUsersRole;
 
-class PermissionServices
+class PermissionServices extends BaseAdminServices
 {
     /**
      * 查询用户角色权限
@@ -40,6 +41,7 @@ class PermissionServices
      */
     public function getSelectAdminUsersList(array $input): array
     {
+        $data = [];
         $where = [];
         if (isset($input['id']) && $input['id'] !== '') {
             $where[] = ['id', '=', $input['id']];
@@ -61,12 +63,15 @@ class PermissionServices
         if (isset($input['end_time']) && $input['end_time'] !== '') {
             $where[] = ['created_at', '<=', $input['end_time']];
         }
-        return AdminUsers::query()
-            ->with('userRoles')
-            ->where($where)
-            ->orderBy('id', 'desc')
-            ->paginate((int)$input['per_page'] ?: 10, ['*'])
-            ->toArray();
+        $data['admin_user_info'] = $this->paginateToArray(
+            AdminUsers::query()
+                ->with('userRoles')
+                ->where($where)
+                ->orderBy('id', 'desc')
+                ->paginate((int)$input['per_page'] ?: 10, ['*'])
+                ->toArray()
+        );
+        return $this->appResponse::successToArray($data);
     }
 
 }

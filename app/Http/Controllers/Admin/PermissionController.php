@@ -20,8 +20,9 @@ class PermissionController extends BaseController
     public function admins(Request $request, PermissionServices $services): JsonResponse
     {
         $input = $request->all();
-        $paginateResult = $services->getSelectAdminUsersList($input);
-        return $this->appResponse::success($this->paginateToArray($paginateResult));
+        $data = $services->getSelectAdminUsersList($input);
+        return $this->validationServicesData($data);
+
     }
     // 角色列表-- 添加角色-- 修改-- 配置权限--
 

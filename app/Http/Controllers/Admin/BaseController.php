@@ -9,10 +9,10 @@ use App\Models\AdminUsers;
 use App\Models\AdminUsersLog;
 use App\Utils\Response\AppResponse;
 use App\Utils\Response\HttpResponse;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Request;
 use App\Utils\Admin\TokensUtils;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class BaseController extends Controller
 {
@@ -48,7 +48,7 @@ class BaseController extends Controller
 
     public $tokensUtils;
 
-    public function __construct(HttpResponse $httpResponse, AppResponse $appResponse,TokensUtils $tokensUtils)
+    public function __construct(HttpResponse $httpResponse, AppResponse $appResponse, TokensUtils $tokensUtils)
     {
         $this->appResponse = $appResponse;
         $this->httpResponse = $httpResponse;
@@ -56,7 +56,13 @@ class BaseController extends Controller
         $this->accessToken = $this->getBearerToken();
     }
 
-    public function callAction($method, $parameters)
+
+    /**
+     * @param $method
+     * @param $parameters
+     * @return JsonResponse
+     */
+    public function callAction($method, $parameters): JsonResponse
     {
         $response = $this->initial($method);
         if ($response instanceof JsonResponse) {
@@ -116,34 +122,14 @@ class BaseController extends Controller
      */
     public function addAdminUsersLog(): void
     {
-        if (Request::isMethod('post')) {
-            AdminUsersLog::create([
-                'admin_users_id' => $this->adminUserInfo->id ?? 0,
-                'path' => Request::path(),
-                'request' => json_encode(Request::all(), JSON_UNESCAPED_UNICODE),
-                'ip' => Request::ip(),
-                'ua' => Request::header('User-Agent', ''),
-                'created_at' => date('Y-m-d H:i:s', time())
-            ]);
-        }
-    }
-
-    /**
-     * 过滤分页参数
-     *
-     * @param array $params
-     *
-     * @return array
-     */
-    public function paginateToArray(array $params): array
-    {
-        return [
-            'data' => $params['data'],                // 当前页数据
-            'total' => $params['total'],              // 总记录数
-            'per_page' => $params['per_page'],        // 每页记录数
-            'current_page' => $params['current_page'],// 当前页码
-            'last_page' => $params['last_page']       // 最后一页
-        ];
+        AdminUsersLog::create([
+            'admin_users_id' => $this->adminUserInfo->id ?? 0,
+            'path' => Request::path(),
+            'request' => json_encode(Request::all(), JSON_UNESCAPED_UNICODE),
+            'ip' => Request::ip(),
+            'ua' => Request::header('User-Agent', ''),
+            'created_at' => date('Y-m-d H:i:s', time())
+        ]);
     }
 
     /**
@@ -153,5 +139,20 @@ class BaseController extends Controller
     public function systemAdminAuthPermission(): bool
     {
         return PermissionServices::getSelectRoleAndPermissionInner($this->adminUserInfo, Request::path());
+    }
+
+    /**
+     * 验证逻辑数据结构
+     * @param array $data
+     * @return JsonResponse
+     */
+    public function validationServicesData(array $data): JsonResponse
+    {
+        if ($data['code'] == 200) {
+            $result = $this->appResponse::success($data);
+        } else {
+            $result = $this->appResponse::error($data);
+        }
+        return $result;
     }
 }
