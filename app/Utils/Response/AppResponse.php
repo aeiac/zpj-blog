@@ -50,7 +50,7 @@ class AppResponse
      * @param string $msg  响应消息（默认：success）
      * @return array
      */
-    public static function successToArray(mixed $data, int $code = 200, string $msg = 'success'): array
+    public static function successToArray(mixed $data, string $msg = 'success', int $code = 200): array
     {
         return [
             'code' => $code,

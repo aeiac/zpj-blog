@@ -3,11 +3,12 @@
 namespace App\Http\Services\Admin\Systems;
 
 use App\Const\Admin\RedisKeyConst;
+use App\Http\Services\Admin\BaseAdminServices;
 use App\Models\Systems\SystemBlackList;
 use App\Utils\Redis\RedisCache;
 use Illuminate\Support\Arr;
 
-class SystemServices
+class SystemServices extends BaseAdminServices
 {
 
     /**
@@ -17,6 +18,7 @@ class SystemServices
      */
     public function getSelectBlackList(array $input): array
     {
+        $data = [];
         $where = [];
         if (isset($input['ip']) && $input['ip'] !== '') {
             $where[] = ['ip_address', 'like', '%' . $input['ip'] . '%'];
@@ -33,10 +35,13 @@ class SystemServices
         if (isset($input['end_time']) && $input['end_time'] !== '') {
             $where[] = ['created_at', '<=', $input['end_time']];
         }
-        return SystemBlackList::where($where)
-            ->orderBY('created_at', 'desc')
-            ->paginate((int)$input['per_page'] ?: 10, ['*'])
-            ->toArray();
+        $data['info'] = $this->$this->paginateToArray(
+            SystemBlackList::where($where)
+                ->orderBY('created_at', 'desc')
+                ->paginate((int)$input['per_page'] ?: 10, ['*'])
+                ->toArray()
+        );
+        return $this->appResponse::successToArray($data);
     }
 
     /**
@@ -55,6 +60,7 @@ class SystemServices
      */
     public function savaBlackList(array $input): array
     {
+        $data = [];
         $id = $input['id'] ?? null;
         if (!empty($input['ip_address'])) {
             $IpExists = SystemBlackList::where([
@@ -62,7 +68,7 @@ class SystemServices
                 'status' => SystemBlackList::STATUS_ACTIVE
             ])->exists();
             if ($IpExists) {
-                return ['code'=>401,'message' => '当前IP已存在！'];
+                return $this->appResponse::errorToArray(401, '当前IP已存在！', $data);
             }
         }
         $input = Arr::only($input, ['ip_address', 'reason', 'status']);
@@ -70,7 +76,7 @@ class SystemServices
         if ($component->id && $input['status'] == SystemBlackList::STATUS_INACTIVE) {
             RedisCache::del(sprintf(RedisKeyConst::ACCESS_BLACK_LIST_KEY, $component->ip_address));
         }
-        return ['message' => '操作成功！当前ID为：' . $component->id];
+        return $this->appResponse::successToArray($data, '操作成功！当前ID为：' . $component->id);
     }
 
 
