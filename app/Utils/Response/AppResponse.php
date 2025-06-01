@@ -29,13 +29,13 @@ class AppResponse
      *
      * @param mixed  $data 响应数据
      * @param string $msg  响应消息（默认：error）
-     * @param int    $code 响应状态码（默认：400）
+     * @param int    $code 响应状态码（默认：200）
      * @return JsonResponse
      */
     public static function error(mixed $data): JsonResponse
     {
         $response = [
-            'code' => 400,
+            'code' => 200,
             'msg'  => 'error',
             'data' => $data ?? null,
         ];
