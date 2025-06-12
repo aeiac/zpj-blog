@@ -11,17 +11,25 @@ use Illuminate\Support\Str;
 class AuthAdminServices extends BaseAdminServices
 {
     /**
-     * 登录逻辑
+     * 管理员用户登录逻辑
      *
-     * @param array $input
+     * 根据用户名和密码验证管理员用户身份，
+     * 验证通过后生成新的登录令牌（token）并缓存，
+     * 返回登录用户信息和token。
      *
-     * @return mixed
+     * @param array $input 登录请求参数，必须包含 'name' 和 'password' 字段
+     *
+     * @return array 返回响应数组，包含登录状态和数据或错误消息
      */
-    public function loginAdminUser(array $input): array
+    public function login(array $input): array
     {
         $data = [];
         $adminUser = AdminUsers::where('name', $input['name'])->first();
-        if (!$adminUser || !Hash::check($input['password'] . $adminUser->salt, $adminUser->password) || $adminUser->status == AdminUsers::STATUS_INACTIVE) {
+        if (
+            !$adminUser ||
+            !Hash::check($input['password'] . $adminUser->salt, $adminUser->password) ||
+            $adminUser->status == AdminUsers::STATUS_INACTIVE
+        ) {
             return $this->appResponse::errorToArray(msg: '登录失败，密码错误！');
         }
         $token = TokensUtils::getCache($adminUser->id, 'token');
@@ -38,6 +46,7 @@ class AuthAdminServices extends BaseAdminServices
             'last_login_time' => $adminUser->last_login_time,
             'token'           => $token
         ];
+
         return $this->appResponse::successToArray($data, '登录成功');
     }
 }
