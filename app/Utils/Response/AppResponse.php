@@ -64,7 +64,7 @@ class AppResponse
      * @param int    $code HTTP 状态码，默认 200
      * @return array
      */
-    public static function successToArray(array $data, string $msg = 'success', int $code = 200): array
+    public static function successToArray(array $data=null, string $msg = 'success', int $code = 200): array
     {
         return [
             'code' => $code,

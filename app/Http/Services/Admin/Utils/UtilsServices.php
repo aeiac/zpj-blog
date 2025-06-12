@@ -12,6 +12,7 @@ namespace App\Http\Services\Admin\Utils;
 use App\Http\Services\Admin\BaseAdminServices;
 use Illuminate\Support\Facades\Route;
 use App\Models\Permission\AdminPermission;
+use Illuminate\Support\Str;
 
 class UtilsServices extends BaseAdminServices
 {
@@ -19,17 +20,19 @@ class UtilsServices extends BaseAdminServices
     // 生成权限
     public function generatePermission(array $params, object $adminUsersInfo): array
     {
+        $data = [];
         $routes = Route::getRoutes();
         $permissions = [];
         foreach ($routes as $route) {
-            if ($route->getName()) {
+            if ($route->uri() !== 'up') {
                 $exists = AdminPermission::where([
                     'content' => $route->uri(),
                     'status' => AdminPermission::STATUS_ACTIVE
                 ])->exists();
                 if (!$exists) {
                     $permissions[] = [
-                        'name' => $route->getName(),
+                        'name' => str_replace('/', '.',$route->uri() ),
+                        'code' => substr(md5(uniqid((string)mt_rand(), true)), 0, 9),
                         'content' => $route->uri(),
                         'created_by' => $adminUsersInfo->id,
                         'updated_by' => $adminUsersInfo->id,
@@ -41,9 +44,9 @@ class UtilsServices extends BaseAdminServices
         }
         $insertResult = AdminPermission::insert($permissions);
         if (!$insertResult) {
-            return ['data' => null, 'msg' => '权限生成失败'];
+            return  $this->appResponse::errorToArray(msg:'权限生成失败');
         }
-        return ['data' => null, 'msg' => '权限生成成功'];
+        return $this->appResponse::successToArray(msg: '权限生成成功');
     }
 }
 
