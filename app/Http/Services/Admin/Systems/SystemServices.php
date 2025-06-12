@@ -38,7 +38,7 @@ class SystemServices extends BaseAdminServices
         $data['info'] = $this->$this->paginateToArray(
             SystemBlackList::where($where)
                 ->orderBY('created_at', 'desc')
-                ->paginate((int)$input['per_page'] ?: 10, ['*'])
+                ->paginate((int)$input['per_page'] ?: 10)
                 ->toArray()
         );
         return $this->appResponse::successToArray($data);
@@ -68,7 +68,7 @@ class SystemServices extends BaseAdminServices
                 'status' => SystemBlackList::STATUS_ACTIVE
             ])->exists();
             if ($IpExists) {
-                return $this->appResponse::errorToArray(401, '当前IP已存在！', $data);
+                return $this->appResponse::errorToArray($data, '当前IP已存在！');
             }
         }
         $input = Arr::only($input, ['ip_address', 'reason', 'status']);
