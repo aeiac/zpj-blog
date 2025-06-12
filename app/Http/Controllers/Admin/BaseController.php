@@ -140,19 +140,4 @@ class BaseController extends Controller
     {
         return PermissionServices::getSelectRoleAndPermissionInner($this->adminUserInfo, Request::path());
     }
-
-    /**
-     * 验证逻辑数据结构
-     * @param array $data
-     * @return JsonResponse
-     */
-    public function validationServicesData(array $data): JsonResponse
-    {
-        if ($data['code'] == 200) {
-            $result = $this->appResponse::success($data);
-        } else {
-            $result = $this->appResponse::error($data);
-        }
-        return $result;
-    }
 }

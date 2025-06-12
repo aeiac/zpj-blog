@@ -12,6 +12,6 @@ class ArticlesController extends BaseController
     {
         $input = $request->all();
         $data = $services->getSelectArticlesTable($input);
-        return $this->validationServicesData($data);
+        return $this->appResponse::success($data);
     }
 }
