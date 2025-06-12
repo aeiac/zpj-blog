@@ -21,7 +21,7 @@ class PermissionController extends BaseController
     {
         $input = $request->all();
         $data = $services->getSelectAdminUsersList($input);
-        return $this->validationServicesData($data);
+        return $this->appResponse::success($data);
 
     }
     // 角色列表-- 添加角色-- 修改-- 配置权限--
