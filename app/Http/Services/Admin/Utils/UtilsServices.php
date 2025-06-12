@@ -16,37 +16,54 @@ use Illuminate\Support\Str;
 
 class UtilsServices extends BaseAdminServices
 {
-
-    // 生成权限
+    /**
+     * 批量生成系统中未注册的权限记录
+     *
+     * @param array  $params         额外参数（预留，当前未使用）
+     * @param object $adminUsersInfo 当前操作的管理员信息对象
+     *
+     * @return array 统一格式的响应数组（成功或失败信息）
+     */
     public function generatePermission(array $params, object $adminUsersInfo): array
     {
-        $data = [];
-        $routes = Route::getRoutes();
         $permissions = [];
+        $routes = Route::getRoutes();
+
+        $adminId = $adminUsersInfo->id;
+        $now = now();
+
         foreach ($routes as $route) {
-            if ($route->uri() !== 'up') {
-                $exists = AdminPermission::where([
-                    'content' => $route->uri(),
-                    'status' => AdminPermission::STATUS_ACTIVE
-                ])->exists();
-                if (!$exists) {
-                    $permissions[] = [
-                        'name' => str_replace('/', '.',$route->uri() ),
-                        'code' => substr(md5(uniqid((string)mt_rand(), true)), 0, 9),
-                        'content' => $route->uri(),
-                        'created_by' => $adminUsersInfo->id,
-                        'updated_by' => $adminUsersInfo->id,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ];
-                }
+            $uri = $route->uri();
+
+            if ($uri === 'up') {
+                continue;
             }
+
+            $exists = AdminPermission::where([
+                'content' => $uri,
+                'status'  => AdminPermission::STATUS_ACTIVE
+            ])->exists();
+
+            if ($exists) {
+                continue;
+            }
+            $permissions[] = [
+                'name'       => Str::replace('/', '.', $uri),
+                'code'       => substr(md5(uniqid((string)mt_rand(), true)), 0, 9),
+                'content'    => $uri,
+                'created_by' => $adminId,
+                'updated_by' => $adminId,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
         }
-        $insertResult = AdminPermission::insert($permissions);
-        if (!$insertResult) {
-            return  $this->appResponse::errorToArray(msg:'权限生成失败');
+
+        if (empty($permissions)) {
+            return $this->appResponse::errorToArray(msg: '无新权限可生成');
         }
-        return $this->appResponse::successToArray(msg: '权限生成成功');
+
+        $inserted = AdminPermission::insert($permissions);
+
+        return $inserted ? $this->appResponse::successToArray(msg: '权限生成成功') : $this->appResponse::errorToArray(msg: '权限生成失败');
     }
 }
-
