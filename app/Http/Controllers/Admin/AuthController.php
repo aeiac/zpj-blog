@@ -28,13 +28,10 @@ class AuthController extends BaseController
             'password' => 'required|string|max:16'
         ]);
         if ($validation->fails()) {
-            return $this->appResponse::error('401',$validation->errors()->first());
+            return $this->appResponse::error(msg: $validation->errors()->first());
         }
         $userBackResult = $services->loginAdminUser($input);
-        if (empty($userBackResult)) {
-            return $this->appResponse::error('400','账号不存在或密码不正确');
-        }
-        return $userBackResult;
+        return $this->appResponse::success($userBackResult);
     }
 
     /**

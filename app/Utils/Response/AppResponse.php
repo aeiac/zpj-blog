@@ -14,15 +14,23 @@ class AppResponse
      * @param int    $code 响应状态码（默认：200）
      * @return JsonResponse
      */
-    public static function success(mixed $data): JsonResponse
+    public static function success(mixed $data = null, string $msg = 'success', int $code = 200): JsonResponse
     {
         $response = [
-            'code' => 200,
-            'msg'  => 'success',
+            'code' => $code,
+            'msg'  => $msg,
             'data' => $data ?? null,
         ];
+
+        if (is_array($data) && isset($data['code'])) {
+            $response['code'] = $data['code'] ?? $code;
+            $response['msg']  = $data['msg'] ?? $msg;
+            $response['data'] = $data['data'] ?? null;
+        }
+
         return response()->json($response);
     }
+
 
     /**
      * 输出错误结果（返回 JSON）
@@ -32,13 +40,18 @@ class AppResponse
      * @param int    $code 响应状态码（默认：200）
      * @return JsonResponse
      */
-    public static function error(mixed $data): JsonResponse
+    public static function error(mixed $data = [], string $msg = 'error', int $code = 400): JsonResponse
     {
         $response = [
-            'code' => 200,
-            'msg'  => 'error',
-            'data' => $data ?? null,
+            'code' => $code,
+            'msg'  => $msg,
+            'data' => $data ?? [],
         ];
+        if (is_array($data) && isset($data['code'])) {
+            $response['code'] = $data['code'] ?? $code;
+            $response['msg']  = $data['msg'] ?? $msg;
+            $response['data'] = $data['data'] ?? [];
+        }
         return response()->json($response);
     }
 
@@ -67,7 +80,7 @@ class AppResponse
      * @param mixed  $data 响应数据
      * @return array
      */
-    public static function errorToArray(int $code = 400, string $msg = 'error', mixed $data): array
+    public static function errorToArray(mixed $data = null, string $msg = 'error', int $code = 400): array
     {
         return [
             'code' => $code,
