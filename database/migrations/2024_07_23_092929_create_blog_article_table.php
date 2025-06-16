@@ -12,14 +12,20 @@ return new class extends Migration {
     {
         Schema::create('blog_articles', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('article_id')->comment('文章ID');
+            $table->unsignedBigInteger('article_id')->comment('文章ID');
+            $table->string('code', 64)->nullable()->unique()->comment('文章编码');
             $table->string('title', 255)->comment('文章标题');
             $table->string('slug', 255)->unique()->comment('文章slug');
             $table->text('content')->comment('内容');
-            $table->unsignedInteger('author_id')->comment('作者ID');
+            $table->unsignedBigInteger('author_id')->comment('作者ID');
             $table->unsignedInteger('type_id')->comment('分类ID');
-            $table->enum('status', ['draft', 'published', 'archived', 'del'])->nullable()->default('draft')->comment('发布状态:(草稿、已发布、已归档、软删除)');
+            $table->string('type', 50)->nullable()->comment('文章类型');
+            $table->enum('status', ['draft', 'published', 'archived', 'disabled'])->default('draft')->comment('发布状态');
+            $table->unsignedInteger('sort')->default(0)->comment('排序值');
             $table->timestamp('published_at')->nullable()->comment('发布时间');
+            $table->boolean('is_deleted')->default(false)->comment('是否软删除');
+            $table->unsignedBigInteger('created_by')->nullable()->comment('创建人ID');
+            $table->unsignedBigInteger('updated_by')->nullable()->comment('更新人ID');
             $table->timestamps();
 
             $table->comment('文章表');
@@ -31,6 +37,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('articles');
+        Schema::dropIfExists('blog_articles');
     }
 };
