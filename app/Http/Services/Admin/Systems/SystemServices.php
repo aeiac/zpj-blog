@@ -68,7 +68,7 @@ class SystemServices extends BaseAdminServices
                 'status' => SystemBlackList::STATUS_ACTIVE
             ])->exists();
             if ($IpExists) {
-                return $this->appResponse::errorToArray($data, '当前IP已存在！');
+                return $this->appResponse::errorToArray(code: $this->eMsg::DATA_DUPLICATE);
             }
         }
         $input = Arr::only($input, ['ip_address', 'reason', 'status']);
