@@ -3,7 +3,7 @@
 
 namespace App\Utils;
 
-use App\Const\Admin\ErrorCodeConst;
+use App\Const\Admin\CodeConst;
 use App\Const\Admin\RedisKeyConst;
 use App\Models\Systems\SystemBlackList;
 use GuzzleHttp\Psr7\Utils;
@@ -54,8 +54,8 @@ class MiddlewareConfigurator
             }
         }
         if ($ipCache || $ipInfo) {
-            $result['code'] = ErrorCodeConst::SYSTEM_BLACKLIST_RESTRICTED_ACCESS;
-            $result['message'] = ErrorCodeConst::getErrorCodeConstMessages($result['code']);
+            $result['code'] = CodeConst::SYSTEM_BLACKLIST_RESTRICTED_ACCESS;
+            $result['message'] = CodeConst::getErrorCodeConstMessages($result['code']);
         }
         return $result;
     }

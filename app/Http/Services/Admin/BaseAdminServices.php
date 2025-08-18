@@ -3,6 +3,7 @@
 namespace App\Http\Services\Admin;
 
 use App\Utils\Response\AppResponse;
+use App\Const\Admin\CodeConst;
 
 class BaseAdminServices
 {
@@ -12,9 +13,16 @@ class BaseAdminServices
      */
     public AppResponse $appResponse;
 
-    public function __construct(AppResponse $appResponse)
+    /**
+     * 错误提示语
+     * @var CodeConst
+     */
+    public CodeConst $eMsg;
+
+    public function __construct(AppResponse $appResponse, CodeConst $msg)
     {
         $this->appResponse = $appResponse;
+        $this->eMsg = $msg;
     }
 
     /**

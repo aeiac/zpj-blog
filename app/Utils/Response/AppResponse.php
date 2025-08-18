@@ -2,6 +2,7 @@
 
 namespace App\Utils\Response;
 
+use App\Const\Admin\CodeConst;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class AppResponse
@@ -19,13 +20,13 @@ class AppResponse
         $response = [
             'code' => $code,
             'msg'  => $msg,
-            'data' => $data ?? null,
+            'data' => $data ?? [],
         ];
 
         if (is_array($data) && isset($data['code'])) {
             $response['code'] = $data['code'] ?? $code;
             $response['msg']  = $data['msg'] ?? $msg;
-            $response['data'] = $data['data'] ?? null;
+            $response['data'] = $data['data'] ?? [];
         }
 
         return response()->json($response);
@@ -69,7 +70,7 @@ class AppResponse
         return [
             'code' => $code,
             'msg'  => $msg,
-            'data' => $data ?? null,
+            'data' => $data ?? [],
         ];
     }
 
@@ -83,10 +84,13 @@ class AppResponse
      */
     public static function errorToArray(?array $data = null, string $msg = 'error', int $code = 400): array
     {
+        if ($code != 400) {
+            $msg = CodeConst::getErrorCodeConstMessages($code);
+        }
         return [
             'code' => $code,
             'msg'  => $msg,
-            'data' => $data ?? null,
+            'data' => $data ?? [],
         ];
     }
 }

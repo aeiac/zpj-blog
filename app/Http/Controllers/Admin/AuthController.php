@@ -51,11 +51,9 @@ class AuthController extends BaseController
      *
      * @return JsonResponse 返回登出成功的提示信息
      */
-    public function out(): JsonResponse
+    public function out(AuthAdminServices $services): JsonResponse
     {
-        // 清除缓存的管理员登录状态
-        $this->tokensUtils::clearAdminUserCache($this->adminUserInfo->id);
-
+        $services->out($this->adminUserInfo->id);
         return $this->appResponse::success(msg: "管理员已退出");
     }
 }

@@ -56,6 +56,6 @@ class TokensUtils
     public static function clearAdminUserCache(string $id)
     {
         self::delCache(self::getCache($id, 'token'), 'session');
-        self::delCache($id, 'token');
+        return self::delCache($id, 'token');
     }
 }

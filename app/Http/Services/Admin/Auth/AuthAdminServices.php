@@ -5,6 +5,7 @@ namespace App\Http\Services\Admin\Auth;
 use App\Http\Services\Admin\BaseAdminServices;
 use App\Utils\Admin\TokensUtils;
 use App\Models\AdminUsers;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -25,19 +26,16 @@ class AuthAdminServices extends BaseAdminServices
     {
         $data = [];
         $adminUser = AdminUsers::where('name', $input['name'])->first();
-        if (
-            !$adminUser ||
-            !Hash::check($input['password'] . $adminUser->salt, $adminUser->password) ||
-            $adminUser->status == AdminUsers::STATUS_INACTIVE
-        ) {
-            return $this->appResponse::errorToArray(msg: '登录失败，密码错误！');
+        // 校验密码
+        if (!$adminUser || !Hash::check($input['password'] . $adminUser->salt, $adminUser->password) || $adminUser->status == AdminUsers::STATUS_INACTIVE) {
+            // 账号或密码错误
+            return $this->appResponse::errorToArray(code: $this->eMsg::LOGIN_USER_NOT_FOUND_OR_PASSWORD);
         }
         $token = TokensUtils::getCache($adminUser->id, 'token');
         if ($token) {
             TokensUtils::clearAdminUserCache($adminUser->id);
         }
         $token = Str::random(60);
-        $adminUser->token = $token;
         TokensUtils::setCache($adminUser->id, 'token', $token);
         TokensUtils::setCache($token, 'session', json_encode($adminUser, JSON_UNESCAPED_UNICODE));
         $data += [
@@ -46,7 +44,23 @@ class AuthAdminServices extends BaseAdminServices
             'last_login_time' => $adminUser->last_login_time,
             'token'           => $token
         ];
+        $adminUser->last_login_ip = request()->ip();
+        if (!$adminUser->save()) {
+            return $this->appResponse::errorToArray(code: $this->eMsg::DATA_UPDATE_FAILED);
+        }
+        return $this->appResponse::successToArray($data);
+    }
 
-        return $this->appResponse::successToArray($data, '登录成功');
+    public function out(int $uid): array
+    {
+        $uObj = AdminUsers::find($uid);
+        if (empty($uObj)) {
+            return $this->appResponse::errorToArray(msg: '无此用户');
+        }
+        $uObj->last_login_time = Carbon::now()->format('Y-m-d H-i-s');;
+        if (!TokensUtils::clearAdminUserCache($uid) && !$uObj->save()) {
+            return $this->appResponse::errorToArray(msg: '退出失败');
+        }
+        return $this->appResponse::successToArray(msg: '退出成功');
     }
 }
