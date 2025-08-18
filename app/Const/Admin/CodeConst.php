@@ -14,6 +14,9 @@ class CodeConst
     public const LOGIN_ACCOUNT_LOCKED = 10404;                     // 账户被锁定
     public const LOGIN_ACCOUNT_EXPIRED = 10405;                    // 账户过期
     public const LOGIN_TOO_MANY_ATTEMPTS = 10406;                  // 登录尝试次数过多
+    public const LOGIN_OUT = 10407;                                // 退出失败
+
+
 
     // =======================
     // 系统错误代码：90000 系列
@@ -55,6 +58,7 @@ class CodeConst
             self::LOGIN_ACCOUNT_LOCKED => __('账户已被锁定！'),
             self::LOGIN_ACCOUNT_EXPIRED => __('账户已过期！'),
             self::LOGIN_TOO_MANY_ATTEMPTS => __('尝试登录次数过多，请稍后再试！'),
+            self::LOGIN_OUT => __('退出异常'),
 
             // 系统错误
             self::SYSTEM_BLACKLIST_RESTRICTED_ACCESS => __('已限制访问，稍后再试！'),

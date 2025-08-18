@@ -54,13 +54,14 @@ class AuthAdminServices extends BaseAdminServices
     public function out(int $uid): array
     {
         $uObj = AdminUsers::find($uid);
+        // 判断用户存不存在
         if (empty($uObj)) {
-            return $this->appResponse::errorToArray(msg: '无此用户');
+            return $this->appResponse::errorToArray(code: $this->eMsg::LOGIN_USER_NOT_FOUND_OR_PASSWORD);
         }
-        $uObj->last_login_time = Carbon::now()->format('Y-m-d H-i-s');;
+        $uObj->last_login_time = Carbon::now()->format('Y-m-d H-i-s');
         if (!TokensUtils::clearAdminUserCache($uid) && !$uObj->save()) {
-            return $this->appResponse::errorToArray(msg: '退出失败');
+            return $this->appResponse::errorToArray(code: $this->eMsg::LOGIN_OUT);
         }
-        return $this->appResponse::successToArray(msg: '退出成功');
+        return $this->appResponse::successToArray();
     }
 }
