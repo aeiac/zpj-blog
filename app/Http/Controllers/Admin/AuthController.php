@@ -53,7 +53,7 @@ class AuthController extends BaseController
      */
     public function out(AuthAdminServices $services): JsonResponse
     {
-        $services->out($this->adminUserInfo->id);
-        return $this->appResponse::success(msg: "管理员已退出");
+        $result = $services->out($this->adminUserInfo->id);
+        return $this->appResponse::success($result);
     }
 }
