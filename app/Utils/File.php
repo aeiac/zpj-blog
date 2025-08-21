@@ -4,8 +4,9 @@ namespace App\Utils;
 
 use App\Const\Admin\CodeConst;
 use App\Models\Utils\Files;
-use Illuminate\Support\Facades\Storage;
+use App\Models\Utils\FilesChunks;
 use Illuminate\Support\Str;
+use mysql_xdevapi\Exception;
 
 class File
 {
@@ -96,26 +97,25 @@ class File
     /**
      * 上传文件并保存到指定存储位置
      *
-     * @param string $name        文件业务名称（如：头像、附件、合同）
-     * @param mixed  $file        上传的文件对象（通常是 Illuminate\Http\UploadedFile）
+     * @param string $name 文件业务名称（如：头像、附件、合同）
+     * @param mixed $file 上传的文件对象（通常是 Illuminate\Http\UploadedFile）
      * @param string $storageType 存储方式：local=本地，oss=对象存储
-     * @param string $remark      文件备注信息
-     * @param string $expireAt    文件过期时间（格式：Y-m-d H:i:s）
+     * @param string $remark 文件备注信息
+     * @param string $expireAt 文件过期时间（格式：Y-m-d H:i:s）
      *
      * @return string 上传成功为''
      */
-    public function uploadFile(string $name, mixed $file, string $storageType, string $remark, string $expireAt): string
+    public static function uploadFile(string $name, mixed $file, string $storageType, string $remark, string $expireAt): string
     {
-        $result = '';
         $datePath = date('Ymd');
         $directory = "files/$datePath";
         $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
         $path = $file->storeAs($directory, $filename, 'public');
+        $fPath = 'storage/app/public/' . $path;
         if ($path == 'false') {
             // 上传失败
             $result = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_UPLOAD_FAILED);
         } else {
-            $fPath = 'public' . Storage::url($path);
             $addFile = Files::addFile(
                 $name,
                 $file->getClientOriginalName(),
@@ -133,8 +133,80 @@ class File
                 $result = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_STORAGE_FAILED);
                 // 删除文件
                 @unlink($fPath);
+            } else {
+                $result = $addFile->id;
             }
         }
+        return $result;
+    }
+
+    // 文件分片-发起
+    public static function fileChunksStart(): array
+    {
+        $data = [];
+        $file = Files::addFile(
+            name: '博客', fName: 'null', fNameMd5: 'null', fExtension: 0, fPath: 0, fType: 0, fSize: 0
+        );
+        $data['file_code'] = $file->code;
+        return $data;
+    }
+
+    // 文件分片-上传
+    public static function fileChunksUpload(string $fCode, mixed $file, int $chunkIndex): string
+    {
+        $result = '';
+        $atFile = Files::codeToFiles($fCode);
+
+        // 验证是否存储存在
+        if (empty($atFile)) {
+            return CodeConst::getErrorCodeConstMessages(CodeConst::DATA_NOT_FOUND);
+        }
+
+        // 重复上传分片
+        $atFileChunk = FilesChunks::where('file_id', $atFile->id)->get('chunk_index')->toArray();
+        $chunkIndexS = array_column($atFileChunk, 'chunk_index');
+        if (in_array($chunkIndex, $chunkIndexS)) {
+            return sprintf(
+                CodeConst::getErrorCodeConstMessages(CodeConst::FILE_SAVE_FAILED),
+                '[' . implode('|', $chunkIndexS) . ']'
+            );
+        }
+
+        // 存储
+        $datePath = date('Ymd');
+        $directory = "files/$datePath";
+        $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
+        $path = $file->storeAs($directory, $filename, 'public');
+        $fPath = 'storage/app/public/' . $path;
+        try {
+            if ($path == 'false') {
+                // 上传失败
+                $result = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_UPLOAD_FAILED);
+            } else {
+                $addResult = FilesChunks::addChunk(
+                    name: $atFile->name,
+                    fileId: $atFile->id,
+                    chunkIndex: $chunkIndex,
+                    chunkSize: $file->getSize(),
+//                    chunkHash: md5_file($fPath),
+                    chunkHash: 'w',
+                    path: $fPath,
+                );
+                if (!$addResult) {
+                    // 存储失败
+                    $result = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_STORAGE_FAILED);
+                    // 删除文件
+                    @unlink($fPath);
+                } else {
+                    // 存储文件成功
+                    $result = (string)$addResult->id;
+                }
+            }
+        } catch (Exception) {
+            // 删除文件
+            @unlink($fPath);
+        }
+
         return $result;
     }
 }

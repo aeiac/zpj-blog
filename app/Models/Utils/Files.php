@@ -3,6 +3,7 @@
 namespace App\Models\Utils;
 
 use App\Models\BaseModel;
+use App\Utils\Admin\UserInfo;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 
@@ -12,7 +13,7 @@ class Files extends BaseModel
 
     protected  $primaryKey = 'id';
 
-    public array $status = [
+    public static array $status = [
         0, // 初始化
         1, // 上传中
         2, // 上传失败
@@ -67,7 +68,7 @@ class Files extends BaseModel
      * @param int $status 状态（0=初始化, 1=上传中, 2=失败, 3=成功）
      * @param string|null $remark 备注信息
      * @param string|null $expireAt 文件过期时间
-     * @return int 新插入记录ID
+     * @return object 新插入记录ID
      */
     public static function addFile(
         string     $name,
@@ -79,14 +80,18 @@ class Files extends BaseModel
         int        $fSize,
         string     $storageType = 'local',
         string     $businessTag = 'blog',
-        int        $status = 1,
+        int        $status = 0,
         string     $remark = null,
         string     $expireAt = null  //年-月-日-时-分-秒
-    ): int
+    ): object
     {
         $now = Carbon::now();
+        do {
+            $code = (string) Str::uuid();
+        } while (Files::where('code', $code)->exists());
+        $user = UserInfo::userInfo();
         $data = [
-            'code'           => Str::uuid(),
+            'code'           => $code,
             'name'           => $name,
             'file_name'      => $fName,
             'md5_hash'       => $fNameMd5,
@@ -95,16 +100,23 @@ class Files extends BaseModel
             'file_extension' => $fExtension,
             'file_size'      => $fSize,       // 字节
             'upload_time'    => $now,
-            'uploader_id'    => 1,
             'storage_type'   => $storageType,
             'business_tag'   => $businessTag,
             'remark'         => $remark,
             'expire_at'      => $expireAt,
             'status'         => $status,
-            'created_by'     => 1,
-            'updated_by'     => 1,
+            'uploader_id'    => $user->id,
+            'created_by'     => $user->id,
+            'updated_by'     => $user->id,
         ];
-        $file = self::create($data);
-        return $file->id;
+        return self::create($data);
+    }
+
+    // 根据code查询文件
+    public static function codeToFiles(string $code): object
+    {
+        return Files::where('code', $code)
+            ->where('is_deleted', '0')
+            ->first();
     }
 }

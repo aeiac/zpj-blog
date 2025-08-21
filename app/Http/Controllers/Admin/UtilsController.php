@@ -36,6 +36,7 @@ class UtilsController extends BaseController
     // 文件上传-FilesTo1
     public function fileUpload(Request $request): array
     {
+        $result = [];
         $remark = $request->get('remark');
         $expireAt = $request->get('expire_date');
         $file = $request->file('file');
@@ -47,8 +48,39 @@ class UtilsController extends BaseController
         }
         // 上传文件
         $fileResult = (new File())->uploadFile(name: '博客', file: $file, storageType: $storageType, remark: $remark, expireAt: $expireAt);
-        if (!empty($fileResult)) {
+        if (!empty($fileResult) && !is_numeric($fileResult)) {
             return $this->appResponse::errorToArray(msg: $fileResult);
+        }
+        $result ['file_id'] = $fileResult;
+        return $this->appResponse::successToArray($result);
+    }
+
+    /**
+     * 文件分片上传 - 发起
+     *
+     * 用于初始化大文件分片上传任务，生成 file_code
+     *
+     * @return array
+     *  - file_code: string 本次上传的唯一标识
+     */
+    public function fileChunksStart(Request $request): array
+    {
+        $result = (new File())->fileChunksStart();
+        return $this->appResponse::successToArray($result);
+    }
+
+    /**
+     * 文件分片 - 发起上传
+     */
+    public function fileChunksUpload(Request $request,$file_code,$chunk_index): array
+    {
+        $file = $request->file('file');
+        if (empty($file_code) || is_null($chunk_index) || empty($file)) {
+            return $this->appResponse::errorToArray(code: $this->eMsg::PARAM_REQUIRED);
+        }
+        $result = File::fileChunksUpload($file_code, $file, $chunk_index);
+        if (!empty($result) && !is_numeric($result)) {
+            return $this->appResponse::errorToArray(msg: $result);
         }
         return $this->appResponse::successToArray();
     }

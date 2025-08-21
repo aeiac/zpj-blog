@@ -54,7 +54,7 @@ class BaseController extends Controller
         $this->appResponse = $appResponse;
         $this->httpResponse = $httpResponse;
         $this->tokensUtils = $tokensUtils;
-        $this->accessToken = $this->getBearerToken();
+        $this->accessToken = $tokensUtils::getBearerToken();
         $this->eMsg = $msg;
     }
 
@@ -99,23 +99,6 @@ class BaseController extends Controller
 //        if ($this->systemAdminAuthPermission()) {
 //            return $this->errorJson(400, '无此权限！');
 //        }
-    }
-
-    /**
-     * 获取Bearer中的Token
-     * @return string
-     */
-    public function getBearerToken(): string
-    {
-        $authorizationHeader = Request::header('Authorization', '');
-        if ($authorizationHeader && str_starts_with($authorizationHeader, 'Bearer')) {
-            return trim(str_replace('Bearer', '', $authorizationHeader));
-        }
-        $token = Request::cookie(CommonConst::ADMIN_TOKEN_COOKIE_KEY);
-        if ($token) {
-            return trim($token);
-        }
-        return '';
     }
 
     /**

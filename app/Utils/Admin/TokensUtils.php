@@ -10,7 +10,9 @@
 namespace App\Utils\Admin;
 
 use App\Const\Admin\CacheConst;
+use App\Const\Admin\CommonConst;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Request;
 
 class TokensUtils
 {
@@ -57,5 +59,19 @@ class TokensUtils
     {
         self::delCache(self::getCache($id, 'token'), 'session');
         return self::delCache($id, 'token');
+    }
+
+    // 获取请求头中Token
+    public static function getBearerToken(): string
+    {
+        $authorizationHeader = Request::header('Authorization', '');
+        if ($authorizationHeader && str_starts_with($authorizationHeader, 'Bearer')) {
+            return trim(str_replace('Bearer', '', $authorizationHeader));
+        }
+        $token = Request::cookie(CommonConst::ADMIN_TOKEN_COOKIE_KEY);
+        if ($token) {
+            return trim($token);
+        }
+        return '';
     }
 }

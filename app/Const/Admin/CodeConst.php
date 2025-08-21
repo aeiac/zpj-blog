@@ -4,7 +4,6 @@ namespace App\Const\Admin;
 
 class CodeConst
 {
-
     // =======================
     // 用户登录错误代码：10000 系列
     // =======================
@@ -15,8 +14,6 @@ class CodeConst
     public const LOGIN_ACCOUNT_EXPIRED = 10405;                    // 账户过期
     public const LOGIN_TOO_MANY_ATTEMPTS = 10406;                  // 登录尝试次数过多
     public const LOGIN_OUT = 10407;                                // 退出失败
-
-
 
     // =======================
     // 系统错误代码：90000 系列
@@ -55,6 +52,18 @@ class CodeConst
     public const FILE_CHUNK_MISSING = 13005;                         // 缺少分片
     public const FILE_MERGE_FAILED = 13006;                          // 分片合并失败
     public const FILE_STORAGE_FAILED = 13007;                        // 存储失败
+    public const FILE_SAVE_FAILED = 13008;                           // 分片重复
+
+    // =======================
+    // 参数错误代码：14000 系列
+    // =======================
+    public const PARAM_REQUIRED = 14001;         // 必填参数缺失
+    public const PARAM_INVALID = 14002;          // 参数值无效
+    public const PARAM_TYPE_ERROR = 14003;       // 参数类型错误
+    public const PARAM_OUT_OF_RANGE = 14004;     // 参数超出允许范围
+    public const PARAM_FORMAT_ERROR = 14005;     // 参数格式错误
+    public const PARAM_TOO_LONG = 14006;         // 参数长度超出限制
+    public const PARAM_TOO_SHORT = 14007;        // 参数长度过短
 
     // =======================
     // 方法获取错误提示信息
@@ -66,10 +75,10 @@ class CodeConst
             self::LOGIN_REPEAT => __('请勿重新登录！'),
             self::LOGIN_USER_NOT_FOUND_OR_PASSWORD => __('用户不存在或密码错误！'),
             self::LOGIN_ACCOUNT_DISABLED => __('账户已被禁用！'),
-            self::LOGIN_ACCOUNT_LOCKED => __('账户已被锁定！'),
+            self::LOGIN_ACCOUNT_LOCKED => __('账户被锁定！'),
             self::LOGIN_ACCOUNT_EXPIRED => __('账户已过期！'),
             self::LOGIN_TOO_MANY_ATTEMPTS => __('尝试登录次数过多，请稍后再试！'),
-            self::LOGIN_OUT => __('退出异常'),
+            self::LOGIN_OUT => __('退出异常！'),
 
             // 系统错误
             self::SYSTEM_BLACKLIST_RESTRICTED_ACCESS => __('已限制访问，稍后再试！'),
@@ -100,6 +109,16 @@ class CodeConst
             self::FILE_CHUNK_MISSING => __('缺少文件分片！'),
             self::FILE_MERGE_FAILED => __('文件分片合并失败！'),
             self::FILE_STORAGE_FAILED => __('文件存储失败！'),
+            self::FILE_SAVE_FAILED=>__('上传分片已存在，已上传分片 %s 数据集'),
+
+            // 参数错误
+            self::PARAM_REQUIRED => __('缺少必填参数！'),
+            self::PARAM_INVALID => __('参数值无效！'),
+            self::PARAM_TYPE_ERROR => __('参数类型错误！'),
+            self::PARAM_OUT_OF_RANGE => __('参数超出允许范围！'),
+            self::PARAM_FORMAT_ERROR => __('参数格式错误！'),
+            self::PARAM_TOO_LONG => __('参数长度超出限制！'),
+            self::PARAM_TOO_SHORT => __('参数长度过短！'),
         ];
 
         return $messages[$code] ?? __('未知错误');
