@@ -80,7 +80,7 @@ class Files extends BaseModel
         int        $fSize,
         string     $storageType = 'local',
         string     $businessTag = 'blog',
-        int        $status = 0,
+        int        $status = 3,
         string     $remark = null,
         string     $expireAt = null  //年-月-日-时-分-秒
     ): object

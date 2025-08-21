@@ -48,8 +48,8 @@ Route::prefix('admin')->middleware([AdminGlobalFunMiddleware::class])->group(fun
             Route::prefix('chunks')->group(function () {
                 Route::post('/start', [UtilsController::class, 'fileChunksStart']);
                 Route::post('/upload/{file_code}/{chunk_index}', [UtilsController::class, 'fileChunksUpload']);
-                Route::get('/merge', [UtilsController::class, 'permission']);
-                Route::get('/resume', [UtilsController::class, 'permission']);
+                Route::post('/merge/{file_code}/{chunk_count}', [UtilsController::class, 'fileChunksMerge']);
+                Route::post('/resume', [UtilsController::class, 'permission']);
             });
         });
 

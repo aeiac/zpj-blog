@@ -117,4 +117,26 @@ class UtilsController extends BaseController
         return $this->appResponse::successToArray();
     }
 
+    /**
+     * 文件分片上传 - 合并接口
+     *
+     * 接收客户端请求，将指定文件的所有分片按顺序合并成完整文件。
+     * 合并完成后，会更新文件状态为“已完成”，并返回融合后的基础信息。
+     *
+     * @param string $file_code   唯一文件编码，用于标识整个文件
+     * @param int    $chunk_count 文件分片总数，用于校验是否所有分片已上传
+     *
+     * @return array 返回操作结果，包括状态码、消息，以及融合后的文件基础信息
+     */
+    public function fileChunksMerge(string $file_code, int $chunk_count): array
+    {
+        if (empty($file_code) || !is_numeric($chunk_count)) {
+            return $this->appResponse::errorToArray(code: $this->eMsg::PARAM_REQUIRED);
+        }
+        $result = File::fileChunkMerge($file_code, $chunk_count);
+        if (!empty($result)) {
+            return $this->appResponse::errorToArray(msg: $result);
+        }
+        return $this->appResponse::successToArray();
+    }
 }

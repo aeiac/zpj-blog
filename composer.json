@@ -10,7 +10,8 @@
         "laravel/tinker": "^2.9",
         "predis/predis": "^2.3",
       "ext-curl": "*",
-      "ext-mysql_xdevapi": "*"
+      "ext-mysql_xdevapi": "*",
+      "ext-fileinfo": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

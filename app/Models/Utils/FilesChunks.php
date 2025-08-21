@@ -48,8 +48,6 @@ class FilesChunks extends BaseModel
      * @param int      $chunkSize    分片大小（字节）
      * @param string   $path         分片存储路径
      * @param string   $chunkHash    分片 MD5/SHA1 校验码
-     * @param string   $type         业务分类
-     * @param int      $createdBy    创建人 ID
      * @return object  文件对象
      */
     public static function addChunk(

@@ -53,6 +53,9 @@ class CodeConst
     public const FILE_MERGE_FAILED = 13006;                          // 分片合并失败
     public const FILE_STORAGE_FAILED = 13007;                        // 存储失败
     public const FILE_SAVE_FAILED = 13008;                           // 分片重复
+    public const FILE_COUNT_FAILED = 13009;                           // 分片数量异常
+    public const FILE_MISSING_FAILED = 13010;                          // 找不到文件
+
 
     // =======================
     // 参数错误代码：14000 系列
@@ -109,7 +112,9 @@ class CodeConst
             self::FILE_CHUNK_MISSING => __('缺少文件分片！'),
             self::FILE_MERGE_FAILED => __('文件分片合并失败！'),
             self::FILE_STORAGE_FAILED => __('文件存储失败！'),
-            self::FILE_SAVE_FAILED=>__('上传分片已存在，已上传分片 %s 数据集'),
+            self::FILE_SAVE_FAILED => __('上传分片已存在，已上传分片 %s 数据集'),
+            self::FILE_COUNT_FAILED => __('分片数量异常'),
+            self::FILE_MISSING_FAILED => __('找不到文件'),
 
             // 参数错误
             self::PARAM_REQUIRED => __('缺少必填参数！'),

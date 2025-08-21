@@ -163,9 +163,9 @@ class File
      *
      * 接收单个文件分片并存储，同时记录分片信息。
      *
-     * @param string $fCode      文件唯一编码，用于标识原始文件
-     * @param mixed  $file       分片文件对象，通常为上传的文件实例
-     * @param int    $chunkIndex 分片序号，起始值为 0
+     * @param string $fCode 文件唯一编码，用于标识原始文件
+     * @param mixed $file 分片文件对象，通常为上传的文件实例
+     * @param int $chunkIndex 分片序号，起始值为 0
      *
      * @return string 返回上传结果信息，成功或失败的提示
      *
@@ -182,7 +182,7 @@ class File
         }
 
         // 限制重复提交
-        if($atFile->status == Files::$status[3]){
+        if ($atFile->status == Files::$status[3]) {
             return CodeConst::getErrorCodeConstMessages(CodeConst::DATA_DUPLICATE);
         }
 
@@ -230,6 +230,73 @@ class File
             @unlink($fPath);
         }
 
+        return $result;
+    }
+
+    /**
+     * 文件分片融合
+     *
+     * 将指定文件编码（$fCode）对应的所有分片按顺序合并成完整文件。
+     * 融合完成后，会更新文件状态为“已完成”，并可以获取融合后的文件基础信息。
+     *
+     * @param string $fCode  文件唯一编码，用于标识整个文件
+     * @param int    $fCount 预期的分片总数，用于校验是否所有分片已上传
+     *
+     * @return string 融合结果状态或错误消息
+     */
+    public static function fileChunkMerge(string $fCode, int $fCount): string
+    {
+        $result = '';
+        $atFile = Files::codeToFiles($fCode);
+
+        // 验证是否存储存在
+        if (empty($atFile)) {
+            return CodeConst::getErrorCodeConstMessages(CodeConst::DATA_NOT_FOUND);
+        }
+
+        // 验证是否已融合
+        if ($atFile->status == Files::$status[3]) {
+            return CodeConst::getErrorCodeConstMessages(CodeConst::DATA_DUPLICATE);
+        }
+
+        // 校验分片数量是否达标
+        $chunkS = FilesChunks::where('file_id', $atFile->id)
+            ->orderBy('chunk_index')
+            ->get()
+            ->toArray();
+        if ($fCount != count($chunkS)) {
+            return CodeConst::getErrorCodeConstMessages(CodeConst::FILE_COUNT_FAILED);
+        }
+        // 融合文件
+        $directory = storage_path('app/public/files/');
+        $datePath = date('Ymd');
+        $targetFile = $directory . $datePath . '/' . $atFile->file_name;
+        $out = fopen($targetFile, 'wb');
+        foreach ($chunkS as $chunk) {
+            $chunkPath = storage_path($chunk['path']);
+            if (!file_exists($chunkPath)) {
+                fclose($out);
+                return CodeConst::getErrorCodeConstMessages(CodeConst::FILE_MISSING_FAILED);
+            }
+            $in = fopen($chunkPath, 'rb');
+            while (!feof($in)) {
+                fwrite($out, fread($in, 10192)); // 每次读 10KB
+            }
+            fclose($in);
+        }
+        // 修改基础数据
+        $atFile->md5_hash = md5_file($targetFile);
+        $atFile->file_path = $targetFile;
+        $atFile->file_type = mime_content_type($targetFile);
+        $atFile->file_extension = pathinfo($targetFile, PATHINFO_EXTENSION);
+        $atFile->file_size = filesize($targetFile);
+        $atFile->status = Files::$status[3];
+        $atFile->updated_at = now();
+        if (!$atFile->save()) {
+            $result = CodeConst::getErrorCodeConstMessages(CodeConst::DATA_UPDATE_FAILED);
+            // 删除文件
+            @unlink($targetFile);
+        }
         return $result;
     }
 }
