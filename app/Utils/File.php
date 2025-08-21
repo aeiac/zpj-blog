@@ -107,36 +107,43 @@ class File
      */
     public static function uploadFile(string $name, mixed $file, string $storageType, string $remark, string $expireAt): string
     {
-        $datePath = date('Ymd');
-        $directory = "files/$datePath";
-        $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
-        $path = $file->storeAs($directory, $filename, 'public');
-        $fPath = 'app/public/' . $path;
-        if ($path == 'false') {
-            // 上传失败
-            $result = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_UPLOAD_FAILED);
-        } else {
-            $addFile = Files::addFile(
-                $name,
-                $file->getClientOriginalName(),
-                $filename,
-                $file->getClientOriginalExtension(),
-                $fPath,
-                $file->getMimeType(),
-                $file->getSize(),
-                $storageType,
-                remark: $remark,
-                expireAt: $expireAt
-            );
-            if (!$addFile) {
-                // 存储失败
-                $result = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_STORAGE_FAILED);
-                // 删除文件
-                @unlink($fPath);
+        $result = '';
+        if ($storageType == Files::$storageType[0]) {
+            $datePath = date('Ymd');
+            $directory = "files/$datePath";
+            $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs($directory, $filename, 'public');
+            $fPath = 'app/public/' . $path;
+            if ($path == 'false') {
+                // 上传失败
+                $result = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_UPLOAD_FAILED);
             } else {
-                $result = $addFile->id;
+                $addFile = Files::addFile(
+                    $name,
+                    $file->getClientOriginalName(),
+                    $filename,
+                    $file->getClientOriginalExtension(),
+                    $fPath,
+                    $file->getMimeType(),
+                    $file->getSize(),
+                    $storageType,
+                    remark: $remark,
+                    expireAt: $expireAt
+                );
+                if (!$addFile) {
+                    // 存储失败
+                    $result = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_STORAGE_FAILED);
+                    // 删除文件
+                    @unlink($fPath);
+                } else {
+                    $result = $addFile->id;
+                }
             }
         }
+        if ($storageType == Files::$storageType[1]) {
+            $result = '待开发';
+        }
+
         return $result;
     }
 
@@ -307,7 +314,7 @@ class File
      * 查询指定文件已上传的分片信息，用于实现断点续传。
      * 客户端可以根据返回的分片信息，决定从哪个分片继续上传。
      *
-     * @param string $file_code 唯一文件编码，用于标识整个文件
+     * @param string $fCode 唯一文件编码，用于标识整个文件
      *
      * @return array 返回结果示例：
      * [
