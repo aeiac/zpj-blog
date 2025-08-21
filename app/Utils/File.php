@@ -152,7 +152,7 @@ class File
     {
         $data = [];
         $file = Files::addFile(
-            name: '博客', fName: 'null', fNameMd5: 'null', fExtension: 0, fPath: 0, fType: 0, fSize: 0
+            name: '博客', fName: 'null', fNameMd5: 'null', fExtension: 0, fPath: 0, fType: 0, fSize: 0, status: Files::$status[1]
         );
         $data['file_code'] = $file->code;
         return $data;
@@ -181,6 +181,11 @@ class File
             return CodeConst::getErrorCodeConstMessages(CodeConst::DATA_NOT_FOUND);
         }
 
+        // 限制重复提交
+        if($atFile->status == Files::$status[3]){
+            return CodeConst::getErrorCodeConstMessages(CodeConst::DATA_DUPLICATE);
+        }
+
         // 限制重复上传分片
         $atFileChunk = FilesChunks::where('file_id', $atFile->id)->get('chunk_index')->toArray();
         $chunkIndexS = array_column($atFileChunk, 'chunk_index');
@@ -194,7 +199,7 @@ class File
         // 存储
         $datePath = date('Ymd');
         $directory = "files/$datePath";
-        $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
+        $filename = Str::random(20);
         $path = $file->storeAs($directory, $filename, 'public');
         $fPath = 'app/public/' . $path;
         try {
@@ -203,7 +208,7 @@ class File
                 $result = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_UPLOAD_FAILED);
             } else {
                 $addResult = FilesChunks::addChunk(
-                    name: $atFile->name,
+                    name: $file->getClientOriginalName(),
                     fileId: $atFile->id,
                     chunkIndex: $chunkIndex,
                     chunkSize: $file->getSize(),
