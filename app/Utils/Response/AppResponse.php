@@ -85,7 +85,9 @@ class AppResponse
     public static function errorToArray(?array $data = null, string $msg = 'error', int $code = 400): array
     {
         if ($code != 400) {
-            $msg = CodeConst::getErrorCodeConstMessages($code);
+            if ($msg == 'error') {
+                $msg = CodeConst::getErrorCodeConstMessages($code);
+            }
         }
         return [
             'code' => $code,

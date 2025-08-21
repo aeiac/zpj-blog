@@ -46,6 +46,17 @@ class CodeConst
     public const DATA_DELETE_FAILED = 12006;                         // 数据删除失败
 
     // =======================
+    // 文件上传错误代码：13000 系列
+    // =======================
+    public const FILE_NOT_FOUND = 13001;                             // 未选择文件
+    public const FILE_TOO_LARGE = 13002;                             // 文件过大
+    public const FILE_INVALID_TYPE = 13003;                          // 文件类型不允许
+    public const FILE_UPLOAD_FAILED = 13004;                         // 上传失败
+    public const FILE_CHUNK_MISSING = 13005;                         // 缺少分片
+    public const FILE_MERGE_FAILED = 13006;                          // 分片合并失败
+    public const FILE_STORAGE_FAILED = 13007;                        // 存储失败
+
+    // =======================
     // 方法获取错误提示信息
     // =======================
     public static function getErrorCodeConstMessages($code)
@@ -80,6 +91,15 @@ class CodeConst
             self::DATA_SAVE_FAILED => __('保存数据失败！'),
             self::DATA_UPDATE_FAILED => __('更新数据失败！'),
             self::DATA_DELETE_FAILED => __('删除数据失败！'),
+
+            // 文件上传错误
+            self::FILE_NOT_FOUND => __('请选择要上传的文件！'),
+            self::FILE_TOO_LARGE => __('文件大小超出限制！限制内存大小 %s,当前内存 %s'),
+            self::FILE_INVALID_TYPE => __('不支持的文件类型！'),
+            self::FILE_UPLOAD_FAILED => __('文件上传失败！'),
+            self::FILE_CHUNK_MISSING => __('缺少文件分片！'),
+            self::FILE_MERGE_FAILED => __('文件分片合并失败！'),
+            self::FILE_STORAGE_FAILED => __('文件存储失败！'),
         ];
 
         return $messages[$code] ?? __('未知错误');

@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Const\Admin\CodeConst;
 use App\Const\Admin\CommonConst;
-use App\Http\Services\Admin\Auth\AuthAdminServices;
 use App\Http\Services\Admin\Permission\PermissionServices;
-use App\Models\AdminUsers;
 use App\Models\AdminUsersLog;
 use App\Utils\Response\AppResponse;
 use App\Utils\Response\HttpResponse;
@@ -40,6 +39,8 @@ class BaseController extends Controller
      */
     protected HttpResponse $httpResponse;
 
+    protected CodeConst $eMsg;
+
     /**
      * 应用级响应工具
      * @var AppResponse
@@ -48,12 +49,13 @@ class BaseController extends Controller
 
     public $tokensUtils;
 
-    public function __construct(HttpResponse $httpResponse, AppResponse $appResponse, TokensUtils $tokensUtils)
+    public function __construct(HttpResponse $httpResponse, AppResponse $appResponse, TokensUtils $tokensUtils,CodeConst $msg)
     {
         $this->appResponse = $appResponse;
         $this->httpResponse = $httpResponse;
         $this->tokensUtils = $tokensUtils;
         $this->accessToken = $this->getBearerToken();
+        $this->eMsg = $msg;
     }
 
 

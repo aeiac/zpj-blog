@@ -37,8 +37,20 @@ Route::prefix('admin')->middleware([AdminGlobalFunMiddleware::class])->group(fun
 
     // 功能模块
     Route::prefix('utils')->group(function () {
+        // 生成
         Route::prefix('generate')->group(function () {
             Route::get('/permission', [UtilsController::class, 'permission']);
         });
+
+        // 文件上传
+        Route::prefix('file')->group(function () {
+            Route::post('/upload', [UtilsController::class, 'fileUpload']);
+            Route::prefix('chunks')->group(function () {
+                Route::post('/upload', [UtilsController::class, 'permission']);
+                Route::get('/merge', [UtilsController::class, 'permission']);
+                Route::get('/resume', [UtilsController::class, 'permission']);
+            });
+        });
+
     });
 });

@@ -124,7 +124,7 @@ return [
     ],
 
     // 接口耗时统计
-    'calculate_api_time' => true,
+    'calculate_api_time' => false,
     // IP封禁
     'system_ip_ban' => true
 ];
