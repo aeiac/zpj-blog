@@ -111,7 +111,7 @@ class File
         $directory = "files/$datePath";
         $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
         $path = $file->storeAs($directory, $filename, 'public');
-        $fPath = 'storage/app/public/' . $path;
+        $fPath = 'app/public/' . $path;
         if ($path == 'false') {
             // 上传失败
             $result = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_UPLOAD_FAILED);
@@ -140,7 +140,14 @@ class File
         return $result;
     }
 
-    // 文件分片-发起
+    /**
+     * 文件分片上传-初始化/发起
+     *
+     * 用于在服务器端创建一个新的文件上传记录，
+     * 并生成唯一的文件编码，用于后续分片上传。
+     *
+     * @return array 返回初始化结果，包括唯一文件编码、上传状态等信息
+     */
     public static function fileChunksStart(): array
     {
         $data = [];
@@ -151,7 +158,19 @@ class File
         return $data;
     }
 
-    // 文件分片-上传
+    /**
+     * 文件分片上传
+     *
+     * 接收单个文件分片并存储，同时记录分片信息。
+     *
+     * @param string $fCode      文件唯一编码，用于标识原始文件
+     * @param mixed  $file       分片文件对象，通常为上传的文件实例
+     * @param int    $chunkIndex 分片序号，起始值为 0
+     *
+     * @return string 返回上传结果信息，成功或失败的提示
+     *
+     * @throws \Exception 可能抛出文件存储或数据库异常
+     */
     public static function fileChunksUpload(string $fCode, mixed $file, int $chunkIndex): string
     {
         $result = '';
@@ -162,7 +181,7 @@ class File
             return CodeConst::getErrorCodeConstMessages(CodeConst::DATA_NOT_FOUND);
         }
 
-        // 重复上传分片
+        // 限制重复上传分片
         $atFileChunk = FilesChunks::where('file_id', $atFile->id)->get('chunk_index')->toArray();
         $chunkIndexS = array_column($atFileChunk, 'chunk_index');
         if (in_array($chunkIndex, $chunkIndexS)) {
@@ -177,7 +196,7 @@ class File
         $directory = "files/$datePath";
         $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
         $path = $file->storeAs($directory, $filename, 'public');
-        $fPath = 'storage/app/public/' . $path;
+        $fPath = 'app/public/' . $path;
         try {
             if ($path == 'false') {
                 // 上传失败
@@ -188,8 +207,7 @@ class File
                     fileId: $atFile->id,
                     chunkIndex: $chunkIndex,
                     chunkSize: $file->getSize(),
-//                    chunkHash: md5_file($fPath),
-                    chunkHash: 'w',
+                    chunkHash: md5_file(storage_path($fPath)),
                     path: $fPath,
                 );
                 if (!$addResult) {
