@@ -139,4 +139,15 @@ class UtilsController extends BaseController
         }
         return $this->appResponse::successToArray();
     }
+
+    // 文件分片上传-断点续传
+    public function fileChunksResume(string $file_code): array
+    {
+        if (empty($file_code) ) {
+            return $this->appResponse::errorToArray(code: $this->eMsg::PARAM_REQUIRED);
+        }
+        $result = File::fileChunksResume($file_code);
+        return $this->appResponse::successToArray($result);
+    }
+
 }

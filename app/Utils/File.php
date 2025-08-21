@@ -239,8 +239,8 @@ class File
      * 将指定文件编码（$fCode）对应的所有分片按顺序合并成完整文件。
      * 融合完成后，会更新文件状态为“已完成”，并可以获取融合后的文件基础信息。
      *
-     * @param string $fCode  文件唯一编码，用于标识整个文件
-     * @param int    $fCount 预期的分片总数，用于校验是否所有分片已上传
+     * @param string $fCode 文件唯一编码，用于标识整个文件
+     * @param int $fCount 预期的分片总数，用于校验是否所有分片已上传
      *
      * @return string 融合结果状态或错误消息
      */
@@ -299,4 +299,42 @@ class File
         }
         return $result;
     }
+
+    // 文件分片-断点续传
+    public static function fileChunksResume(string $fCode): array
+    {
+        $result = [];
+        $atFile = Files::codeToFiles($fCode);
+
+        if (empty($atFile)) {
+            return CodeConst::getErrorCodeConstMessages(CodeConst::DATA_NOT_FOUND);
+        }
+
+        if ($atFile->status == Files::$status[3]) {
+            return CodeConst::getErrorCodeConstMessages(CodeConst::DATA_DUPLICATE);
+        }
+
+        // 查询分片信息
+        $chunkS = FilesChunks::where('file_id', $atFile->id)
+            ->orderBy('chunk_index')
+            ->get(['chunk_index', 'chunk_size'])
+            ->toArray();
+
+        if (empty($chunkS)) {
+            // 未上传分片
+            $result['existed'] = false;
+            $result['fragment_index'] = -1;
+            $result['fragment_index_bytes'] = '0 KB';
+            $result['fragment_list'] = [];
+        } else {
+            $chunkIndexS = array_column($chunkS, 'chunk_index');
+            $totalBytes = array_sum(array_column($chunkS, 'chunk_size'));
+            $result['existed'] = true;
+            $result['fragment_index'] = max($chunkIndexS);
+            $result['fragment_list'] = '[' . implode('|', $chunkIndexS) . ']';
+            $result['fragment_index_bytes'] = round($totalBytes / 1024, 2) . ' KB';
+        }
+        return $result;
+    }
+
 }

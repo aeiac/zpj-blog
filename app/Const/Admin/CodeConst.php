@@ -54,7 +54,7 @@ class CodeConst
     public const FILE_STORAGE_FAILED = 13007;                        // 存储失败
     public const FILE_SAVE_FAILED = 13008;                           // 分片重复
     public const FILE_COUNT_FAILED = 13009;                           // 分片数量异常
-    public const FILE_MISSING_FAILED = 13010;                          // 找不到文件
+    public const FILE_MISSING_FAILED = 13010;                         // 找不到文件
 
 
     // =======================
