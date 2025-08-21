@@ -12,6 +12,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Services\Admin\Utils\UtilsServices;
 use App\Models\Utils\Files;
 use App\Utils\File;
+use Exception;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -19,12 +20,14 @@ class UtilsController extends BaseController
 {
 
     /**
-     * 生成权限
+     * 生成权限接口
      *
-     * @param Request $request
-     * @param UtilsServices $services
+     * 该接口用于生成系统权限，可通过 UtilsServices 服务处理权限逻辑。
      *
-     * @return JsonResponse
+     * @param Request $request HTTP 请求对象，包含权限生成所需参数
+     * @param UtilsServices $services 权限服务类实例，处理权限生成逻辑
+     *
+     * @return JsonResponse 返回 JSON 格式的响应，包含生成结果或错误信息
      */
     public function permission(Request $request, UtilsServices $services): JsonResponse
     {
@@ -33,7 +36,19 @@ class UtilsController extends BaseController
         return $this->appResponse::success($result);
     }
 
-    // 文件上传-FilesTo1
+    /**
+     * 文件上传接口（表单上传）
+     *
+     * 处理客户端通过表单提交的文件上传：
+     * 1. 获取请求参数：remark（备注）、expire_date（过期时间）、storage_type（存储类型，默认本地）、file（上传的文件）。
+     * 2. 验证上传文件是否合法（类型、大小等）。
+     * 3. 调用 File 模型保存文件。
+     * 4. 返回上传结果，包括 file_id 或错误信息。
+     *
+     * @param Request $request HTTP 请求对象，包含上传文件和其他可选参数
+     *
+     * @return array 返回操作结果数组，包含成功或失败信息
+     */
     public function fileUpload(Request $request): array
     {
         $result = [];
@@ -63,22 +78,34 @@ class UtilsController extends BaseController
      * @return array
      *  - file_code: string 本次上传的唯一标识
      */
-    public function fileChunksStart(Request $request): array
+    public function fileChunksStart(): array
     {
         $result = (new File())->fileChunksStart();
         return $this->appResponse::successToArray($result);
     }
 
     /**
-     * 文件分片 - 发起上传
+     * 文件分片上传接口
+     *
+     * 接收客户端上传的单个文件分片，并保存到服务器。
+     *
+     * @param Request $request HTTP 请求对象，包含上传的文件
+     * @param string $file_code 唯一文件编码，用于标识整个文件
+     * @param int $chunk_index 当前上传的分片序号（从0开始）
+     *
+     * @return array 返回操作结果，包括状态码、消息及分片上传状态
      */
-    public function fileChunksUpload(Request $request,$file_code,$chunk_index): array
+    public function fileChunksUpload(Request $request, string $file_code, int $chunk_index): array
     {
         $file = $request->file('file');
-        if (empty($file_code) || is_null($chunk_index) || empty($file)) {
+        if (empty($file_code) || !is_numeric($chunk_index) || empty($file)) {
             return $this->appResponse::errorToArray(code: $this->eMsg::PARAM_REQUIRED);
         }
-        $result = File::fileChunksUpload($file_code, $file, $chunk_index);
+        try {
+            $result = File::fileChunksUpload($file_code, $file, $chunk_index);
+        } catch (Exception) {
+            return $this->appResponse::errorToArray();
+        }
         if (!empty($result) && !is_numeric($result)) {
             return $this->appResponse::errorToArray(msg: $result);
         }
