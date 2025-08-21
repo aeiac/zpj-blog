@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('md5_hash')->nullable()->comment('文件 MD5 值');
             $table->text('file_path')->comment('文件存储路径');
             $table->string('file_type')->comment('文件类型');
+            $table->string('file_extension', 10)->comment('文件后缀');
             $table->unsignedBigInteger('file_size')->comment('文件大小（字节）');
             $table->dateTime('upload_time')->comment('上传时间');
             $table->boolean('is_deleted')->default(false)->comment('是否删除：0=否，1=是');
