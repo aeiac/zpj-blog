@@ -102,6 +102,11 @@ class UtilsController extends BaseController
             return $this->appResponse::errorToArray(code: $this->eMsg::PARAM_REQUIRED);
         }
         try {
+            // 验证文件，限制上传大小 30 MB
+            $fileValidate = File::validateUploadFile(file: $file, maxSize: 30);
+            if (!empty($fileValidate)) {
+                return $this->appResponse::errorToArray(msg: $fileValidate);
+            }
             $result = File::fileChunksUpload($file_code, $file, $chunk_index);
         } catch (Exception) {
             return $this->appResponse::errorToArray();
