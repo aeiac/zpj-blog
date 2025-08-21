@@ -4,7 +4,6 @@ namespace App\Models\Utils;
 
 use App\Models\BaseModel;
 use Carbon\Carbon;
-use DateTime;
 use Illuminate\Support\Str;
 
 class Files extends BaseModel
@@ -59,6 +58,7 @@ class Files extends BaseModel
      * @param string $name 业务名
      * @param string $fName 文件名（含扩展名）
      * @param string $fNameMd5
+     * @param string $fExtension
      * @param string $fPath
      * @param string $fType
      * @param int $fSize
@@ -66,7 +66,7 @@ class Files extends BaseModel
      * @param string $businessTag 业务标签
      * @param int $status 状态（0=初始化, 1=上传中, 2=失败, 3=成功）
      * @param string|null $remark 备注信息
-     * @param DateTime|null $expireAt 文件过期时间
+     * @param string|null $expireAt 文件过期时间
      * @return int 新插入记录ID
      */
     public static function addFile(

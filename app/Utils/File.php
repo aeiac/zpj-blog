@@ -93,7 +93,17 @@ class File
     }
 
 
-    // 文件上传
+    /**
+     * 上传文件并保存到指定存储位置
+     *
+     * @param string $name        文件业务名称（如：头像、附件、合同）
+     * @param mixed  $file        上传的文件对象（通常是 Illuminate\Http\UploadedFile）
+     * @param string $storageType 存储方式：local=本地，oss=对象存储
+     * @param string $remark      文件备注信息
+     * @param string $expireAt    文件过期时间（格式：Y-m-d H:i:s）
+     *
+     * @return string 上传成功为''
+     */
     public function uploadFile(string $name, mixed $file, string $storageType, string $remark, string $expireAt): string
     {
         $result = '';
