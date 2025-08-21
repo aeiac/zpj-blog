@@ -300,6 +300,23 @@ class File
         return $result;
     }
 
+
+    /**
+     * 文件分片上传 - 断点续传
+     *
+     * 查询指定文件已上传的分片信息，用于实现断点续传。
+     * 客户端可以根据返回的分片信息，决定从哪个分片继续上传。
+     *
+     * @param string $file_code 唯一文件编码，用于标识整个文件
+     *
+     * @return array 返回结果示例：
+     * [
+     *     'existed' => true|false,            // 是否存在已上传的分片
+     *     'fragment_index' => int,            // 已上传分片中最大序号（从0开始），-1 表示未上传任何分片
+     *      'fragment_list'=> []               // 已上传分片数据集
+     *     'fragment_index_bytes' => string    // 已上传分片累计大小，单位 KB
+     * ]
+     */
     // 文件分片-断点续传
     public static function fileChunksResume(string $fCode): array
     {

@@ -140,7 +140,19 @@ class UtilsController extends BaseController
         return $this->appResponse::successToArray();
     }
 
-    // 文件分片上传-断点续传
+    /**
+     * 文件分片上传 - 断点续传接口
+     *
+     * 接口说明：
+     * 查询指定文件已上传的分片信息，返回客户端已上传分片的最大序号和累计大小，
+     * 用于支持文件上传断点续传。
+     *
+     *
+     * 路径参数：
+     * @param string $file_code 文件唯一编码，用于标识整个文件
+     *
+     * @return array JSON 数组形式返回分片状态
+     */
     public function fileChunksResume(string $file_code): array
     {
         if (empty($file_code) ) {
