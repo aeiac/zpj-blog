@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\LinkController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\AuthController;
@@ -35,6 +36,11 @@ Route::prefix('admin')->middleware([AdminGlobalFunMiddleware::class])->group(fun
         Route::get('/list', [ArticlesController::class, 'list']);
     });
 
+    // 链接管理
+    Route::prefix('link')->group(function () {
+        Route::post('/add', [LinkController::class, 'add']);
+    });
+
     // 功能模块
     Route::prefix('utils')->group(function () {
         // 生成
@@ -57,4 +63,6 @@ Route::prefix('admin')->middleware([AdminGlobalFunMiddleware::class])->group(fun
             });
         });
     });
+
+
 });

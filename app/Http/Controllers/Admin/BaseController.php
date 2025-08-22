@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Const\Admin\CodeConst;
-use App\Const\Admin\CommonConst;
 use App\Http\Services\Admin\Permission\PermissionServices;
 use App\Models\AdminUsersLog;
 use App\Utils\Response\AppResponse;

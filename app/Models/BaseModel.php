@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Utils\Admin\UserInfo;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -62,8 +63,16 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|static whereExists(\Closure $callback, $boolean = 'and', $not = false)
  * @method static \Illuminate\Database\Eloquent\Builder|static whereNotExists(\Closure $callback, $boolean = 'and')
  */
+
 class BaseModel extends Model
 {
 
+    protected object $user;
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        $this->user = UserInfo::userInfo();
+    }
 
 }

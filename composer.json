@@ -11,7 +11,8 @@
         "predis/predis": "^2.3",
       "ext-curl": "*",
       "ext-mysql_xdevapi": "*",
-      "ext-fileinfo": "*"
+      "ext-fileinfo": "*",
+      "ext-http": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
