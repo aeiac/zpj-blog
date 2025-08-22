@@ -6,6 +6,8 @@ use App\Const\Admin\CodeConst;
 use App\Http\Services\Admin\BaseAdminServices;
 use App\Models\Utils\Files;
 use App\Models\Utils\FilesChunks;
+use App\Utils\Admin\UserInfo;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 use mysql_xdevapi\Exception;
 
@@ -444,7 +446,7 @@ class File
     /**
      * 更新文件记录
      *
-     * @param int   $fileId 要更新的文件ID
+     * @param int $fileId 要更新的文件ID
      * @param array $params 要更新的字段
      *
      * @return string 返回 true 表示成功，返回错误信息表示失败
@@ -452,15 +454,21 @@ class File
     public static function fileOperate(int $fileId, array $params): string
     {
         $data = '';
+        $now = Carbon::now();
+        $user = UserInfo::userInfo();
         $file = Files::find($fileId);
         if (empty($file)) {
             return CodeConst::getErrorCodeConstMessages(CodeConst::FILE_MISSING_FAILED);
         }
-        if(!empty($params['file_name'])){
+        if (!empty($params['file_name'])) {
             $params['file_name'] = $params['file_name'] . '.' . $file->file_extension;
         }
+        if (!empty($params['is_deleted'])) {
+            $params['deleted_at'] = $now;
+        }
+        $params['updated_by'] = $user->id;
         $file->fill($params);
-        if(!$file->save()){
+        if (!$file->save()) {
             return CodeConst::getErrorCodeConstMessages(CodeConst::DATA_UPDATE_FAILED);
         }
         return $data;

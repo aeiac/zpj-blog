@@ -230,7 +230,6 @@ class UtilsController extends BaseController
         $validation = Validator::make($params, [
             'file_name'    => 'nullable|string|max:50',
             'is_deleted'   => 'nullable|integer|max:1|in:1,0',
-            'storage_type' => 'nullable|string|max:20|in:'.implode(',',Files::$storageType),
             'file_type'    => 'nullable|string|max:20',
             'business_tag' => 'nullable|string|max:100',
             'status'       => 'nullable|integer|in:' . implode(',', Files::$status),
