@@ -32,7 +32,7 @@ class BaseAdminServices
      *
      * @return array
      */
-    public function paginateToArray(array $params): array
+    public static function paginateToArray(array $params): array
     {
         return [
             'data' => $params['data'],                // 当前页数据

@@ -44,6 +44,7 @@ Route::prefix('admin')->middleware([AdminGlobalFunMiddleware::class])->group(fun
 
         // 文件上传
         Route::prefix('file')->group(function () {
+            Route::get('/list', [UtilsController::class, 'fileList']);
             Route::post('/upload', [UtilsController::class, 'fileUpload']);
             Route::prefix('chunks')->group(function () {
                 Route::get('/start', [UtilsController::class, 'fileChunksStart']);

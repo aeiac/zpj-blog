@@ -3,6 +3,7 @@
 namespace App\Utils;
 
 use App\Const\Admin\CodeConst;
+use App\Http\Services\Admin\BaseAdminServices;
 use App\Models\Utils\Files;
 use App\Models\Utils\FilesChunks;
 use Illuminate\Support\Str;
@@ -155,7 +156,7 @@ class File
      *
      * @return array 返回初始化结果，包括唯一文件编码、上传状态等信息
      */
-    public static function fileChunksStart(string $fileName,string $storageType): array
+    public static function fileChunksStart(string $fileName, string $storageType): array
     {
         $data = [];
         $file = Files::addFile(
@@ -382,6 +383,64 @@ class File
             $result['fragment_index_bytes'] = round($totalBytes / 1024, 2) . ' KB';
         }
         return $result;
+    }
+
+    /**
+     * 查询文件列表（支持分页和多条件筛选）
+     *
+     * @param array $params 查询参数数组，包括：
+     *      - 'file_name'    => (string|null) 文件名称模糊搜索
+     *      - 'storage'      => (string|null) 存储类型，可选 local、oss 等
+     *      - 'file_type'    => (string|null) 文件类型/扩展名，例如 pdf、doc
+     *      - 'uploader_id'  => (int|null) 上传人 ID
+     *      - 'status'       => (int|null) 文件状态，参考 Files::$status
+     *      - 'date_from'    => (string|null) 起始上传时间，格式 YYYY-MM-DD
+     *      - 'date_to'      => (string|null) 结束上传时间，格式 YYYY-MM-DD
+     *      - 'page'         => (int|null) 当前页码，默认 1
+     *      - 'per_page'     => (int|null) 每页条数，默认 10
+     *
+     * @return array 返回分页后的文件列表数据，包括：
+     *      - 'data'          => 文件记录数组（只包含指定字段）
+     *      - 'current_page'  => 当前页码
+     *      - 'per_page'      => 每页条数
+     *      - 'total'         => 总记录数
+     *      - 'last_page'     => 总页数
+     */
+    public static function queryFileList(array $params): array
+    {
+        $data = [];
+        $where = [];
+        if (!empty($params['file_name'])) {
+            $where[] = ['file_name', 'like', '%' . $params['file_name'] . '%'];
+        }
+        if (!empty($params['storage'])) {
+            $where[] = ['storage_type', '=', $params['storage']];
+        }
+        if (!empty($params['file_type'])) {
+            $where[] = ['file_type', '=', $params['file_type']];
+        }
+        if (!empty($params['uploader_id'])) {
+            $where[] = ['uploader_id', '=', $params['uploader_id']];
+        }
+        if (isset($params['status']) && $params['status'] !== '') {
+            $where[] = ['status', '=', $params['status']];
+        }
+        if (!empty($params['date_from'])) {
+            $where[] = ['upload_time', '>=', $params['date_from']];
+        }
+        if (!empty($params['date_to'])) {
+            $where[] = ['upload_time', '<=', $params['date_to']];
+        }
+
+        // 分页参数
+        $perPage = isset($input['per_page']) && is_numeric($input['per_page']) ? (int)$input['per_page'] : 10;
+
+        // 查询并分页
+        $query = Files::where($where)
+            ->orderByDesc('created_at');
+        $paginatedData = $query->paginate($perPage)->toArray();
+        $data['files_info'] = BaseAdminServices::paginateToArray($paginatedData);
+        return $data;
     }
 
 }

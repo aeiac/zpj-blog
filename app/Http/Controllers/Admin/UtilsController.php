@@ -14,6 +14,7 @@ use App\Models\Utils\Files;
 use App\Utils\File;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class UtilsController extends BaseController
@@ -165,6 +166,51 @@ class UtilsController extends BaseController
         }
         $result = File::fileChunksResume($file_code);
         return $this->appResponse::successToArray($result);
+    }
+
+    /**
+     * 文件列表接口
+     *
+     * 查询上传的文件列表，支持分页、筛选和状态过滤。
+     *
+     * @param Request $request HTTP 请求对象，包含查询参数：
+     *      - 'file_name'   => (string|null) 文件名称模糊搜索
+     *      - 'storage'     => (string|null) 存储类型，例如 local、oss
+     *      - 'file_type'   => (string|null) 文件类型/扩展名，例如 pdf、doc
+     *      - 'uploader_id' => (int|null) 上传人 ID
+     *      - 'status'      => (int|null) 文件状态，参考 Files::$status
+     *      - 'date_from'   => (string|null) 上传起始时间，格式 YYYY-MM-DD
+     *      - 'date_to'     => (string|null) 上传结束时间，格式 YYYY-MM-DD
+     *      - 'page'        => (int|null) 当前页码，默认 1
+     *      - 'per_page'    => (int|null) 每页条数，默认 10
+     *
+     * @return array 返回接口响应数组，包括：
+     *      - 'data'         => 文件记录列表
+     *      - 'current_page' => 当前页码
+     *      - 'per_page'     => 每页条数
+     *      - 'total'        => 总记录数
+     *      - 'last_page'    => 总页数
+     */
+    public function fileList(Request $request): array
+    {
+        $params = $request->all();
+        $validation = Validator::make($params, [
+            'file_name'    => 'nullable|string|max:50',
+            'storage'      => 'nullable|string|max:20|in:'.implode(',',Files::$storageType),
+            'file_type'    => 'nullable|string|max:20',
+            'uploader_id'  => 'nullable|integer',
+            'status'       => 'nullable|integer|in:' . implode(',', Files::$status),
+            'date_from'    => 'nullable|date',
+            'date_to'      => 'nullable|date',
+            'page'         => 'nullable|integer|min:1',
+            'per_page'     => 'nullable|integer|min:1|max:100',
+        ]);
+        if ($validation->fails()) {
+            return $this->appResponse::errorToArray(msg: $validation->errors()->first());
+        }
+        $result = File::queryFileList($params);
+        return $this->appResponse::successToArray($result);
+
     }
 
 }
