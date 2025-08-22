@@ -44,9 +44,11 @@ Route::prefix('admin')->middleware([AdminGlobalFunMiddleware::class])->group(fun
 
         // 文件上传
         Route::prefix('file')->group(function () {
-            Route::post('/operate/{file_id}',[UtilsController::class,'fileOperate']);
+            Route::post('/operate/{file_id}', [UtilsController::class, 'fileOperate']);
             Route::get('/list', [UtilsController::class, 'fileList']);
             Route::post('/upload', [UtilsController::class, 'fileUpload']);
+
+            // 文件分片
             Route::prefix('chunks')->group(function () {
                 Route::get('/start', [UtilsController::class, 'fileChunksStart']);
                 Route::post('/upload/{file_code}/{chunk_index}', [UtilsController::class, 'fileChunksUpload']);
@@ -54,6 +56,5 @@ Route::prefix('admin')->middleware([AdminGlobalFunMiddleware::class])->group(fun
                 Route::get('/resume/{file_code}', [UtilsController::class, 'fileChunksResume']);
             });
         });
-
     });
 });
