@@ -82,7 +82,10 @@ class UtilsController extends BaseController
     {
         $fileName = $request->get('file_name');
         $storageType = $request->get('storage_type');
-        $result = (new File())->fileChunksStart($storageType);
+        if (empty($storageType) || !is_numeric($fileName)) {
+            return $this->appResponse::errorToArray(code: $this->eMsg::PARAM_REQUIRED);
+        }
+        $result = (new File())->fileChunksStart($fileName, $storageType);
         return $this->appResponse::successToArray($result);
     }
 

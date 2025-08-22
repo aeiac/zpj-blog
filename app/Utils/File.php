@@ -155,11 +155,11 @@ class File
      *
      * @return array 返回初始化结果，包括唯一文件编码、上传状态等信息
      */
-    public static function fileChunksStart(string $storageType): array
+    public static function fileChunksStart(string $fileName,string $storageType): array
     {
         $data = [];
         $file = Files::addFile(
-            name: '博客', fName: 'null', fNameMd5: 'null', fExtension: 0, fPath: 0, fType: 0, fSize: 0, storageType: $storageType, status: Files::$status[1]
+            name: $fileName, fName: 'null', fNameMd5: 'null', fExtension: 0, fPath: 0, fType: 0, fSize: 0, storageType: $storageType, status: Files::$status[1]
         );
         $data['file_code'] = $file->code;
         return $data;
