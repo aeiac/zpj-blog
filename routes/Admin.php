@@ -39,6 +39,7 @@ Route::prefix('admin')->middleware([AdminGlobalFunMiddleware::class])->group(fun
     // 链接管理
     Route::prefix('link')->group(function () {
         Route::post('/add', [LinkController::class, 'add']);
+        Route::get('/list', [LinkController::class, 'list']);
     });
 
     // 功能模块
