@@ -47,8 +47,13 @@ class UtilsServices extends BaseAdminServices
             if ($exists) {
                 continue;
             }
+            $uri = preg_replace('/{.*?}/', '', $uri);
+
+            $uri = trim($uri, '/');
+            $key = Str::replace('/', '.', $uri);
+
             $permissions[] = [
-                'name'       => Str::replace('/', '.', $uri),
+                'name'       => $key,
                 'code'       => substr(md5(uniqid((string)mt_rand(), true)), 0, 9),
                 'content'    => $uri,
                 'created_by' => $adminId,

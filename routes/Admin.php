@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\ArticlesController;
 use App\Http\Controllers\Admin\UtilsController;
 use App\Http\Middleware\Admin\GlobalFunMiddleware as AdminGlobalFunMiddleware;
 
+
+
 Route::prefix('admin')->middleware([AdminGlobalFunMiddleware::class])->group(function () {
     // 登录模块
     Route::prefix('auth')->group(function () {
