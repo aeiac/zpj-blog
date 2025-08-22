@@ -46,7 +46,7 @@ Route::prefix('admin')->middleware([AdminGlobalFunMiddleware::class])->group(fun
         Route::prefix('file')->group(function () {
             Route::post('/upload', [UtilsController::class, 'fileUpload']);
             Route::prefix('chunks')->group(function () {
-                Route::post('/start', [UtilsController::class, 'fileChunksStart']);
+                Route::get('/start', [UtilsController::class, 'fileChunksStart']);
                 Route::post('/upload/{file_code}/{chunk_index}', [UtilsController::class, 'fileChunksUpload']);
                 Route::post('/merge/{file_code}/{chunk_count}', [UtilsController::class, 'fileChunksMerge']);
                 Route::get('/resume/{file_code}', [UtilsController::class, 'fileChunksResume']);

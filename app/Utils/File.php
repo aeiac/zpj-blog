@@ -155,11 +155,11 @@ class File
      *
      * @return array 返回初始化结果，包括唯一文件编码、上传状态等信息
      */
-    public static function fileChunksStart(): array
+    public static function fileChunksStart(string $storageType): array
     {
         $data = [];
         $file = Files::addFile(
-            name: '博客', fName: 'null', fNameMd5: 'null', fExtension: 0, fPath: 0, fType: 0, fSize: 0, status: Files::$status[1]
+            name: '博客', fName: 'null', fNameMd5: 'null', fExtension: 0, fPath: 0, fType: 0, fSize: 0, storageType: $storageType, status: Files::$status[1]
         );
         $data['file_code'] = $file->code;
         return $data;
@@ -203,38 +203,46 @@ class File
             );
         }
 
-        // 存储
-        $datePath = date('Ymd');
-        $directory = "files/$datePath";
-        $filename = Str::random(20);
-        $path = $file->storeAs($directory, $filename, 'public');
-        $fPath = 'app/public/' . $path;
-        try {
-            if ($path == 'false') {
-                // 上传失败
-                $result = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_UPLOAD_FAILED);
-            } else {
-                $addResult = FilesChunks::addChunk(
-                    name: $file->getClientOriginalName(),
-                    fileId: $atFile->id,
-                    chunkIndex: $chunkIndex,
-                    chunkSize: $file->getSize(),
-                    chunkHash: md5_file(storage_path($fPath)),
-                    path: $fPath,
-                );
-                if (!$addResult) {
-                    // 存储失败
-                    $result = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_STORAGE_FAILED);
-                    // 删除文件
-                    @unlink($fPath);
+        // 区分存储位置
+        if ($atFile->storage_type == Files::$storageType[0]) {
+            // 存储
+            $datePath = date('Ymd');
+            $directory = "files/$datePath";
+            $filename = Str::random(20);
+            $path = $file->storeAs($directory, $filename, 'public');
+            $fPath = 'app/public/' . $path;
+            try {
+                if ($path == 'false') {
+                    // 上传失败
+                    $result = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_UPLOAD_FAILED);
                 } else {
-                    // 存储文件成功
-                    $result = (string)$addResult->id;
+                    $addResult = FilesChunks::addChunk(
+                        name: $file->getClientOriginalName(),
+                        fileId: $atFile->id,
+                        chunkIndex: $chunkIndex,
+                        chunkSize: $file->getSize(),
+                        chunkHash: md5_file(storage_path($fPath)),
+                        path: $fPath,
+                    );
+                    if (!$addResult) {
+                        // 存储失败
+                        $result = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_STORAGE_FAILED);
+                        // 删除文件
+                        @unlink($fPath);
+                    } else {
+                        // 存储文件成功
+                        $result = (string)$addResult->id;
+                    }
                 }
+            } catch (Exception) {
+                // 删除文件
+                @unlink($fPath);
             }
-        } catch (Exception) {
-            // 删除文件
-            @unlink($fPath);
+        }
+
+        // 远程服务器存储
+        if ($atFile->storage_type == Files::$storageType[1]) {
+            $result = 'oss待开发';
         }
 
         return $result;
@@ -274,36 +282,51 @@ class File
         if ($fCount != count($chunkS)) {
             return CodeConst::getErrorCodeConstMessages(CodeConst::FILE_COUNT_FAILED);
         }
-        // 融合文件
-        $directory = storage_path('app/public/files/');
-        $datePath = date('Ymd');
-        $targetFile = $directory . $datePath . '/' . $atFile->file_name;
-        $out = fopen($targetFile, 'wb');
-        foreach ($chunkS as $chunk) {
-            $chunkPath = storage_path($chunk['path']);
-            if (!file_exists($chunkPath)) {
-                fclose($out);
-                return CodeConst::getErrorCodeConstMessages(CodeConst::FILE_MISSING_FAILED);
+
+        // 区分存储位置并融合文件
+        $targetFile = '';
+        if ($atFile->storage_type == Files::$storageType[0]) {
+            $directory = storage_path('app/public/files/');
+            $datePath = date('Ymd');
+            $targetFile = $directory . $datePath . '/' . $atFile->file_name;
+            $out = fopen($targetFile, 'wb');
+            foreach ($chunkS as $chunk) {
+                $chunkPath = storage_path($chunk['path']);
+                if (!file_exists($chunkPath)) {
+                    fclose($out);
+                    return CodeConst::getErrorCodeConstMessages(CodeConst::FILE_MISSING_FAILED);
+                }
+                $in = fopen($chunkPath, 'rb');
+                while (!feof($in)) {
+                    fwrite($out, fread($in, 10192)); // 每次读 10KB
+                }
+                fclose($in);
             }
-            $in = fopen($chunkPath, 'rb');
-            while (!feof($in)) {
-                fwrite($out, fread($in, 10192)); // 每次读 10KB
+        }
+        if ($atFile->storage_type == Files::$storageType[1]) {
+            $result = 'oss待开发';
+        }
+
+        // 校验文件位置
+        if (file_exists($targetFile) && is_file($targetFile)) {
+            // 修改基础数据
+            $atFile->md5_hash = md5_file($targetFile);
+            $atFile->file_path = $targetFile;
+            $atFile->file_type = mime_content_type($targetFile);
+            $atFile->file_extension = pathinfo($targetFile, PATHINFO_EXTENSION);
+            $atFile->file_size = filesize($targetFile);
+            $atFile->status = Files::$status[3];
+            $atFile->updated_at = now();
+            if (!$atFile->save()) {
+                $result = CodeConst::getErrorCodeConstMessages(CodeConst::DATA_UPDATE_FAILED);
+                // 删除文件
+                @unlink($targetFile);
             }
-            fclose($in);
+
+        } else {
+            return CodeConst::getErrorCodeConstMessages(CodeConst::FILE_MISSING_FAILED);
         }
-        // 修改基础数据
-        $atFile->md5_hash = md5_file($targetFile);
-        $atFile->file_path = $targetFile;
-        $atFile->file_type = mime_content_type($targetFile);
-        $atFile->file_extension = pathinfo($targetFile, PATHINFO_EXTENSION);
-        $atFile->file_size = filesize($targetFile);
-        $atFile->status = Files::$status[3];
-        $atFile->updated_at = now();
-        if (!$atFile->save()) {
-            $result = CodeConst::getErrorCodeConstMessages(CodeConst::DATA_UPDATE_FAILED);
-            // 删除文件
-            @unlink($targetFile);
-        }
+
         return $result;
     }
 

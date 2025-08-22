@@ -78,9 +78,11 @@ class UtilsController extends BaseController
      * @return array
      *  - file_code: string 本次上传的唯一标识
      */
-    public function fileChunksStart(): array
+    public function fileChunksStart(Request $request): array
     {
-        $result = (new File())->fileChunksStart();
+        $fileName = $request->get('file_name');
+        $storageType = $request->get('storage_type');
+        $result = (new File())->fileChunksStart($storageType);
         return $this->appResponse::successToArray($result);
     }
 
