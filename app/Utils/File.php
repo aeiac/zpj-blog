@@ -441,4 +441,29 @@ class File
         return $data;
     }
 
+    /**
+     * 更新文件记录
+     *
+     * @param int   $fileId 要更新的文件ID
+     * @param array $params 要更新的字段
+     *
+     * @return string 返回 true 表示成功，返回错误信息表示失败
+     */
+    public static function fileOperate(int $fileId, array $params): string
+    {
+        $data = '';
+        $file = Files::find($fileId);
+        if (empty($file)) {
+            return CodeConst::getErrorCodeConstMessages(CodeConst::FILE_MISSING_FAILED);
+        }
+        if(!empty($params['file_name'])){
+            $params['file_name'] = $params['file_name'] . '.' . $file->file_extension;
+        }
+        $file->fill($params);
+        if(!$file->save()){
+            return CodeConst::getErrorCodeConstMessages(CodeConst::DATA_UPDATE_FAILED);
+        }
+        return $data;
+    }
+
 }

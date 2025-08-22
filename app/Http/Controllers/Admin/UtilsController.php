@@ -201,6 +201,7 @@ class UtilsController extends BaseController
             'uploader_id'  => 'nullable|integer',
             'status'       => 'nullable|integer|in:' . implode(',', Files::$status),
             'date_from'    => 'nullable|date',
+            'is_deleted'   => 'nullable|integer|max:1|in:1,0',
             'date_to'      => 'nullable|date',
             'page'         => 'nullable|integer|min:1',
             'per_page'     => 'nullable|integer|min:1|max:100',
@@ -212,5 +213,39 @@ class UtilsController extends BaseController
         return $this->appResponse::successToArray($result);
 
     }
+
+    /**
+     * 文件操作接口 - 更新文件信息
+     *
+     * 接收前端传来的可修改字段，并更新对应文件记录
+     *
+     * @param int     $file_id 要更新的文件ID
+     * @param Request $request HTTP请求对象
+     *
+     * @return array 返回操作结果
+     */
+    public function fileOperate(int $file_id,Request $request): array
+    {
+        $params = $request->all();
+        $validation = Validator::make($params, [
+            'file_name'    => 'nullable|string|max:50',
+            'is_deleted'   => 'nullable|integer|max:1|in:1,0',
+            'storage_type' => 'nullable|string|max:20|in:'.implode(',',Files::$storageType),
+            'file_type'    => 'nullable|string|max:20',
+            'business_tag' => 'nullable|string|max:100',
+            'status'       => 'nullable|integer|in:' . implode(',', Files::$status),
+            'remark'       => 'nullable|string|max:200',
+            'expire_at'    => 'nullable|date'
+        ]);
+        if ($validation->fails()) {
+            return $this->appResponse::errorToArray(msg: $validation->errors()->first());
+        }
+        $result = File::fileOperate($file_id,$params);
+        if (!empty($result)) {
+            return $this->appResponse::errorToArray(msg: $result);
+        }
+        return $this->appResponse::successToArray();
+    }
+
 
 }
