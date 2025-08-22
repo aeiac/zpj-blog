@@ -348,39 +348,36 @@ class File
      *     'fragment_index_bytes' => string    // 已上传分片累计大小，单位 KB
      * ]
      */
-    // 文件分片-断点续传
     public static function fileChunksResume(string $fCode): array
     {
         $result = [];
+        $result['existed'] = false;
+        $result['fragment_index'] = -1;
+        $result['fragment_index_bytes'] = '0 KB';
+        $result['fragment_list'] = [];
+
         $atFile = Files::codeToFiles($fCode);
 
         if (empty($atFile)) {
-            return CodeConst::getErrorCodeConstMessages(CodeConst::DATA_NOT_FOUND);
+            $result['msg'] = CodeConst::getErrorCodeConstMessages(CodeConst::DATA_NOT_FOUND);
         }
-
         if ($atFile->status == Files::$status[3]) {
-            return CodeConst::getErrorCodeConstMessages(CodeConst::DATA_DUPLICATE);
-        }
-
-        // 查询分片信息
-        $chunkS = FilesChunks::where('file_id', $atFile->id)
-            ->orderBy('chunk_index')
-            ->get(['chunk_index', 'chunk_size'])
-            ->toArray();
-
-        if (empty($chunkS)) {
-            // 未上传分片
-            $result['existed'] = false;
-            $result['fragment_index'] = -1;
-            $result['fragment_index_bytes'] = '0 KB';
-            $result['fragment_list'] = [];
+            $result['msg'] = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_SUCCESS_FAILED);
         } else {
-            $chunkIndexS = array_column($chunkS, 'chunk_index');
-            $totalBytes = array_sum(array_column($chunkS, 'chunk_size'));
-            $result['existed'] = true;
-            $result['fragment_index'] = max($chunkIndexS);
-            $result['fragment_list'] = '[' . implode('|', $chunkIndexS) . ']';
-            $result['fragment_index_bytes'] = round($totalBytes / 1024, 2) . ' KB';
+            // 查询分片信息
+            $chunkS = FilesChunks::where('file_id', $atFile->id)
+                ->orderBy('chunk_index')
+                ->get(['chunk_index', 'chunk_size'])
+                ->toArray();
+            if (!empty($chunkS)) {
+                $chunkIndexS = array_column($chunkS, 'chunk_index');
+                $totalBytes = array_sum(array_column($chunkS, 'chunk_size'));
+                $result['existed'] = true;
+                $result['fragment_index'] = max($chunkIndexS);
+                $result['fragment_list'] = '[' . implode('|', $chunkIndexS) . ']';
+                $result['fragment_index_bytes'] = round($totalBytes / 1024, 2) . ' KB';
+                $result['msg'] = '';
+            }
         }
         return $result;
     }
@@ -405,6 +402,7 @@ class File
      *      - 'per_page'      => 每页条数
      *      - 'total'         => 总记录数
      *      - 'last_page'     => 总页数
+     * @noinspection SpellCheckingInspection
      */
     public static function queryFileList(array $params): array
     {
