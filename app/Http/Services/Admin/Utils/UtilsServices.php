@@ -22,7 +22,7 @@ class UtilsServices extends BaseAdminServices
      * @param array  $params         额外参数（预留，当前未使用）
      * @param object $adminUsersInfo 当前操作的管理员信息对象
      *
-     * @return array 统一格式的响应数组（成功或失败信息）
+     * @return array  统一格式的响应数组（成功或失败信息）
      */
     public function generatePermission(array $params, object $adminUsersInfo): array
     {
