@@ -26,9 +26,9 @@ class AuthController extends BaseController
      * @param Request           $request  HTTP 请求对象
      * @param AuthAdminServices $services 依赖注入的登录服务类
      *
-     * @return JsonResponse 返回 JSON 格式的响应
+     * @return array 返回 JSON 格式的响应
      */
-    public function login(Request $request, AuthAdminServices $services): JsonResponse
+    public function login(Request $request, AuthAdminServices $services): array
     {
         $input = $request->post();
 
@@ -38,10 +38,10 @@ class AuthController extends BaseController
         ]);
 
         if ($validation->fails()) {
-            return $this->appResponse::error(msg: $validation->errors()->first());
+            return $this->appResponse::errorToArray(msg: $validation->errors()->first());
         }
         $userBackResult = $services->login($input);
-        return $this->appResponse::success($userBackResult);
+        return $this->appResponse::successToArray(data: $userBackResult);
     }
 
     /**
@@ -49,11 +49,14 @@ class AuthController extends BaseController
      *
      * 清除当前管理员用户的缓存信息，完成登出操作。
      *
-     * @return JsonResponse 返回登出成功的提示信息
+     * @return array 返回登出成功的提示信息
      */
-    public function out(AuthAdminServices $services): JsonResponse
+    public function out(AuthAdminServices $services): array
     {
         $result = $services->out($this->adminUserInfo->id);
-        return $this->appResponse::success($result);
+        if (!empty($result)) {
+            return $this->appResponse::errorToArray(msg: $result);
+        }
+        return $this->appResponse::successToArray();
     }
 }

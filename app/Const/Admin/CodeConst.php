@@ -70,6 +70,17 @@ class CodeConst
     public const PARAM_TOO_SHORT = 14007;        // 参数长度过短
 
     // =======================
+    // 参数错误代码：15000 系列
+    // =======================
+    public const GENERATE_FAILED        = 15001; // 通用生成失败
+    public const EXPORT_FAILED          = 15002; // 文件导出失败
+    public const IMPORT_FAILED          = 15003; // 文件导入失败
+    public const TASK_CREATE_FAILED     = 15004; // 任务生成失败
+    public const TEMPLATE_NOT_FOUND     = 15005; // 无可生成数据
+    public const FILE_WRITE_ERROR       = 15006; // 文件写入失败
+    public const FILE_PERMISSION_DENIED = 15007; // 文件权限不足
+
+    // =======================
     // 方法获取错误提示信息
     // =======================
     public static function getErrorCodeConstMessages($code)
@@ -126,6 +137,16 @@ class CodeConst
             self::PARAM_FORMAT_ERROR => __('参数格式错误！'),
             self::PARAM_TOO_LONG => __('参数长度超出限制！'),
             self::PARAM_TOO_SHORT => __('参数长度过短！'),
+
+
+            // 生成错误
+            self::GENERATE_FAILED        => __('通用生成失败！'),
+            self::EXPORT_FAILED          => __('文件导出失败！'),
+            self::IMPORT_FAILED          => __('文件导入失败！'),
+            self::TASK_CREATE_FAILED     => __('任务生成失败！'),
+            self::TEMPLATE_NOT_FOUND     => __('无可生成数据！'),
+            self::FILE_WRITE_ERROR       => __('文件写入失败！'),
+            self::FILE_PERMISSION_DENIED => __('文件权限不足！'),
         ];
 
         return $messages[$code] ?? __('未知错误');

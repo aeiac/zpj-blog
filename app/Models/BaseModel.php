@@ -67,12 +67,12 @@ use Illuminate\Database\Eloquent\Model;
 class BaseModel extends Model
 {
 
-    protected object $user;
+    protected object|array $user;
 
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-        $this->user = UserInfo::userInfo();
+        $this->user = UserInfo::userInfo() ?? [];
     }
 
 }

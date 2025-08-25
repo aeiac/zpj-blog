@@ -2,6 +2,7 @@
 
 namespace App\Http\Services\Admin\Auth;
 
+use App\Const\Admin\CodeConst;
 use App\Http\Services\Admin\BaseAdminServices;
 use App\Utils\Admin\TokensUtils;
 use App\Models\AdminUsers;
@@ -29,7 +30,8 @@ class AuthAdminServices extends BaseAdminServices
         // 校验密码
         if (!$adminUser || !Hash::check($input['password'] . $adminUser->salt, $adminUser->password) || $adminUser->status == AdminUsers::STATUS_INACTIVE) {
             // 账号或密码错误
-            return $this->appResponse::errorToArray(code: $this->eMsg::LOGIN_USER_NOT_FOUND_OR_PASSWORD);
+             $data['msg'] = CodeConst::getErrorCodeConstMessages(CodeConst::LOGIN_USER_NOT_FOUND_OR_PASSWORD);
+             return $data;
         }
         $token = TokensUtils::getCache($adminUser->id, 'token');
         if ($token) {
@@ -42,26 +44,28 @@ class AuthAdminServices extends BaseAdminServices
             'name'            => $adminUser->name,
             'nickname'        => $adminUser->nickname,
             'last_login_time' => $adminUser->last_login_time,
-            'token'           => $token
+            'token'           => $token,
+            'msg'             => 'OK'
         ];
         $adminUser->last_login_ip = request()->ip();
         if (!$adminUser->save()) {
             return $this->appResponse::errorToArray(code: $this->eMsg::DATA_UPDATE_FAILED);
         }
-        return $this->appResponse::successToArray($data);
+        return $data;
     }
 
-    public function out(int $uid): array
+    public function out(int $uid): string
     {
+        $result = '';
         $uObj = AdminUsers::find($uid);
         // 判断用户存不存在
         if (empty($uObj)) {
-            return $this->appResponse::errorToArray(code: $this->eMsg::LOGIN_USER_NOT_FOUND_OR_PASSWORD);
+            return CodeConst::getErrorCodeConstMessages(CodeConst::LOGIN_USER_NOT_FOUND_OR_PASSWORD);
         }
         $uObj->last_login_time = Carbon::now()->format('Y-m-d H-i-s');
         if (!TokensUtils::clearAdminUserCache($uid) && !$uObj->save()) {
-            return $this->appResponse::errorToArray(code: $this->eMsg::LOGIN_OUT);
+            return CodeConst::getErrorCodeConstMessages(CodeConst::LOGIN_OUT);
         }
-        return $this->appResponse::successToArray();
+        return $result;
     }
 }

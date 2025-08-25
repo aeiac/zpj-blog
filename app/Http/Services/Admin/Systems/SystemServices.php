@@ -35,13 +35,13 @@ class SystemServices extends BaseAdminServices
         if (isset($input['end_time']) && $input['end_time'] !== '') {
             $where[] = ['created_at', '<=', $input['end_time']];
         }
-        $data['info'] = $this->$this->paginateToArray(
+        $data['info'] = $this->paginateToArray(
             SystemBlackList::where($where)
                 ->orderBY('created_at', 'desc')
                 ->paginate((int)$input['per_page'] ?: 10)
                 ->toArray()
         );
-        return $this->appResponse::successToArray($data);
+        return $data;
     }
 
     /**
@@ -53,14 +53,12 @@ class SystemServices extends BaseAdminServices
      * - reason: 封禁原因（选填）
      * - status: 封禁状态（选填，1启用，0禁用）
      *
-     * @return array 操作结果，包括：
-     * - message: 操作成功后的提示信息，包含当前操作的ID
-     * - code: 错误码（若有错误）
+     * @return string 操作结果
      *
      */
-    public function savaBlackList(array $input): array
+    public function savaBlackList(array $input): string
     {
-        $data = [];
+        $data = '';
         $id = $input['id'] ?? null;
         if (!empty($input['ip_address'])) {
             $IpExists = SystemBlackList::where([
@@ -68,7 +66,7 @@ class SystemServices extends BaseAdminServices
                 'status' => SystemBlackList::STATUS_ACTIVE
             ])->exists();
             if ($IpExists) {
-                return $this->appResponse::errorToArray(code: $this->eMsg::DATA_DUPLICATE);
+                return $this->eMsg::getErrorCodeConstMessages(code: $this->eMsg::DATA_DUPLICATE);
             }
         }
         $input = Arr::only($input, ['ip_address', 'reason', 'status']);
@@ -76,8 +74,6 @@ class SystemServices extends BaseAdminServices
         if ($component->id && $input['status'] == SystemBlackList::STATUS_INACTIVE) {
             RedisCache::del(sprintf(RedisKeyConst::ACCESS_BLACK_LIST_KEY, $component->ip_address));
         }
-        return $this->appResponse::successToArray($data, '操作成功！当前ID为：' . $component->id);
+        return $data;
     }
-
-
 }

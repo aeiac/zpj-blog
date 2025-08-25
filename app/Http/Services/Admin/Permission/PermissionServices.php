@@ -71,7 +71,7 @@ class PermissionServices extends BaseAdminServices
                 ->paginate((int)$input['per_page'] ?: 10, ['*'])
                 ->toArray()
         );
-        return $this->appResponse::successToArray($data);
+        return  $data;
     }
 
 }

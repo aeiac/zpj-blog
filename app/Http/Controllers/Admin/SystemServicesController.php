@@ -16,13 +16,13 @@ class SystemServicesController extends BaseController
      * @param Request $request
      * @param SystemServices $services
      *
-     * @return JsonResponse
+     * @return array
      */
-    public function blackList(Request $request, SystemServices $services): JsonResponse
+    public function blackList(Request $request, SystemServices $services): array
     {
         $input = $request->all();
         $paginateResult = $services->getSelectBlackList($input);
-        return $this->appResponse::success($paginateResult);
+        return $this->appResponse::successToArray($paginateResult);
     }
 
     /**
@@ -33,11 +33,14 @@ class SystemServicesController extends BaseController
      *
      * @return JsonResponse
      */
-    public function blackListSave(Request $request, SystemServices $services): JsonResponse
+    public function blackListSave(Request $request, SystemServices $services): array
     {
         $input = $request->all();
-        $savaResult = $services->savaBlackList($input);
-        return $this->appResponse::success($savaResult);
+        $result = $services->savaBlackList($input);
+        if (!empty($result)) {
+            return $this->appResponse::errorToArray(msg: $result);
+        }
+        return $this->appResponse::success();
     }
 
 

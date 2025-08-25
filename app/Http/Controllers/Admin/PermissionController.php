@@ -15,13 +15,13 @@ class PermissionController extends BaseController
      * @param Request $request
      * @param PermissionServices $services
      *
-     * @return JsonResponse
+     * @return array
      */
-    public function admins(Request $request, PermissionServices $services): JsonResponse
+    public function admins(Request $request, PermissionServices $services): array
     {
         $input = $request->all();
         $data = $services->getSelectAdminUsersList($input);
-        return $this->appResponse::success($data);
+        return $this->appResponse::successToArray($data);
 
     }
     // 角色列表-- 添加角色-- 修改-- 配置权限--

@@ -9,6 +9,7 @@
 
 namespace App\Http\Services\Admin\Utils;
 
+use App\Const\Admin\CodeConst;
 use App\Http\Services\Admin\BaseAdminServices;
 use Illuminate\Support\Facades\Route;
 use App\Models\Permission\AdminPermission;
@@ -22,11 +23,11 @@ class UtilsServices extends BaseAdminServices
      * @param array  $params         额外参数（预留，当前未使用）
      * @param object $adminUsersInfo 当前操作的管理员信息对象
      *
-     * @return array  统一格式的响应数组（成功或失败信息）
+     * @return string  统一格式的响应数组（成功或失败信息）
      */
-    public function generatePermission(array $params, object $adminUsersInfo): array
+    public function generatePermission(array $params, object $adminUsersInfo): string
     {
-        $permissions = [];
+        $data= '';
         $routes = Route::getRoutes();
 
         $adminId = $adminUsersInfo->id;
@@ -64,11 +65,12 @@ class UtilsServices extends BaseAdminServices
         }
 
         if (empty($permissions)) {
-            return $this->appResponse::errorToArray(msg: '无新权限可生成');
+            return CodeConst::getErrorCodeConstMessages(CodeConst::TEMPLATE_NOT_FOUND);
         }
-
         $inserted = AdminPermission::insert($permissions);
-
-        return $inserted ? $this->appResponse::successToArray(msg: '权限生成成功') : $this->appResponse::errorToArray(msg: '权限生成失败');
+        if(empty($inserted)){
+            return CodeConst::getErrorCodeConstMessages(CodeConst::GENERATE_FAILED);
+        }
+        return  $data;
     }
 }
