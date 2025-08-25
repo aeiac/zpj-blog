@@ -80,6 +80,22 @@ class CodeConst
     public const FILE_WRITE_ERROR       = 15006; // 文件写入失败
     public const FILE_PERMISSION_DENIED = 15007; // 文件权限不足
 
+
+    // =======================
+    // 通用成功代码：200 系列
+    // =======================
+    public const SUCCESS                 = 20000; // 通用操作成功
+    public const LOGIN_SUCCESS           = 20001; // 登录成功
+    public const LOGOUT_SUCCESS          = 20002; // 登出成功
+    public const CREATE_SUCCESS          = 20003; // 创建成功
+    public const UPDATE_SUCCESS          = 20004; // 更新成功
+    public const DELETE_SUCCESS          = 20005; // 删除成功
+    public const IMPORT_SUCCESS          = 20006; // 导入成功
+    public const EXPORT_SUCCESS          = 20007; // 导出成功
+    public const FILE_UPLOAD_SUCCESS     = 20008; // 文件上传成功
+    public const PERMISSION_GENERATE_SUCCESS = 20009; // 权限生成成功
+
+
     // =======================
     // 方法获取错误提示信息
     // =======================
@@ -147,6 +163,18 @@ class CodeConst
             self::TEMPLATE_NOT_FOUND     => __('无可生成数据！'),
             self::FILE_WRITE_ERROR       => __('文件写入失败！'),
             self::FILE_PERMISSION_DENIED => __('文件权限不足！'),
+
+            // 通用成功字段
+            self::SUCCESS                  => __('操作成功！'),
+            self::LOGIN_SUCCESS            => __('登录成功！'),
+            self::LOGOUT_SUCCESS           => __('退出成功！'),
+            self::CREATE_SUCCESS           => __('创建成功！'),
+            self::UPDATE_SUCCESS           => __('更新成功！'),
+            self::DELETE_SUCCESS           => __('删除成功！'),
+            self::IMPORT_SUCCESS           => __('导入成功！'),
+            self::EXPORT_SUCCESS           => __('导出成功！'),
+            self::FILE_UPLOAD_SUCCESS      => __('文件上传成功！'),
+            self::PERMISSION_GENERATE_SUCCESS => __('权限生成成功！'),
         ];
 
         return $messages[$code] ?? __('未知错误');

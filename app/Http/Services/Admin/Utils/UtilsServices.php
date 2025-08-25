@@ -23,35 +23,44 @@ class UtilsServices extends BaseAdminServices
      * @param array  $params         额外参数（预留，当前未使用）
      * @param object $adminUsersInfo 当前操作的管理员信息对象
      *
-     * @return string  统一格式的响应数组（成功或失败信息）
+     * @return array  统一格式的响应数组（成功或失败信息）
      */
-    public function generatePermission(array $params, object $adminUsersInfo): string
+    public function generatePermission(array $params, object $adminUsersInfo): array
     {
-        $data= '';
-        $routes = Route::getRoutes();
+        $data = [];
+        $permissions = [];
+        $routes      = Route::getRoutes();
+        $adminId     = $adminUsersInfo->id ?? 0;
+        $now         = now();
 
-        $adminId = $adminUsersInfo->id;
-        $now = now();
+        // 获取数据库中已有 active 权限 content
+        $existingUris = AdminPermission::where('status', AdminPermission::STATUS_ACTIVE)
+            ->pluck('content')
+            ->toArray();
 
         foreach ($routes as $route) {
             $uri = $route->uri();
 
+            // 跳过不需要的路由
             if ($uri === 'up') {
                 continue;
             }
 
-            $exists = AdminPermission::where([
-                'content' => $uri,
-                'status'  => AdminPermission::STATUS_ACTIVE
-            ])->exists();
+            // 去掉路由参数
+            $uri = preg_replace('/{.*?}/', '', $uri);
+            $uri = trim($uri, '/');
 
-            if ($exists) {
+            // 数据库已有权限跳过
+            if (in_array($uri, $existingUris)) {
                 continue;
             }
-            $uri = preg_replace('/{.*?}/', '', $uri);
 
-            $uri = trim($uri, '/');
-            $key = Str::replace('/', '.', $uri);
+            // 转换为权限 key 格式：admin.utils.file.chunks.upload
+            $key = Str::of($uri)
+                ->replace('/', '.')
+                ->replaceMatches('/\.\.+/', '.')
+                ->trim('.')
+                ->__toString();
 
             $permissions[] = [
                 'name'       => $key,
@@ -64,13 +73,26 @@ class UtilsServices extends BaseAdminServices
             ];
         }
 
+        // 如果没有新权限
         if (empty($permissions)) {
-            return CodeConst::getCodeMsg(CodeConst::TEMPLATE_NOT_FOUND);
+            $data['msg'] = CodeConst::getCodeMsg(CodeConst::TEMPLATE_NOT_FOUND);
+            return $data;
         }
+
+        // 去重，防止同一次循环中重复
+        $permissions = collect($permissions)->unique('content')->values()->all();
+
+        // 插入数据库
         $inserted = AdminPermission::insert($permissions);
-        if(empty($inserted)){
-            return CodeConst::getCodeMsg(CodeConst::GENERATE_FAILED);
+        if (!$inserted) {
+            $data['msg'] = CodeConst::getCodeMsg(CodeConst::GENERATE_FAILED);
+            return $data;
         }
-        return  $data;
+
+        // 成功返回
+        return [
+            'msg' => CodeConst::getCodeMsg(CodeConst::PERMISSION_GENERATE_SUCCESS),
+            'count' => count($permissions),
+        ];
     }
 }

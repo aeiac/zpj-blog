@@ -28,13 +28,13 @@ class UtilsController extends BaseController
      * @param Request $request HTTP 请求对象，包含权限生成所需参数
      * @param UtilsServices $services 权限服务类实例，处理权限生成逻辑
      *
-     * @return JsonResponse 返回 JSON 格式的响应，包含生成结果或错误信息
+     * @return array 返回 JSON 格式的响应，包含生成结果或错误信息
      */
-    public function permission(Request $request, UtilsServices $services): JsonResponse
+    public function permission(Request $request, UtilsServices $services): array
     {
         $params = $request->all();
         $result = $services->generatePermission($params, $this->adminUserInfo);
-        return $this->appResponse::success($result);
+        return $this->appResponse::successToArray($result);
     }
 
     /**
