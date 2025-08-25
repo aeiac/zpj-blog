@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('blog_link', function (Blueprint $table) {
+        Schema::create('blog_links', function (Blueprint $table) {
             $table->id()->comment('主键 ID');
 
             // 通用字段
@@ -36,6 +36,6 @@ return new class extends Migration
     public function down(): void
     {
         //
-        Schema::dropIfExists('blog_link');
+        Schema::dropIfExists('blog_links');
     }
 };
