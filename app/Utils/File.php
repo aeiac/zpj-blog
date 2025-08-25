@@ -50,20 +50,20 @@ class File
 
         // 文件是否有效
         if (!$file || !$file->isValid()) {
-            $errors[] = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_NOT_FOUND);
+            $errors[] = CodeConst::getCodeMsg(CodeConst::FILE_NOT_FOUND);
             return implode('; ', $errors);
         }
 
         // MIME 类型检查
         if (!empty($allowedTypes) && !in_array($file->getMimeType(), $allowedTypes)) {
-            $errors[] = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_INVALID_TYPE);
+            $errors[] = CodeConst::getCodeMsg(CodeConst::FILE_INVALID_TYPE);
         }
 
         // 扩展名检查
         if (!empty($allowedExtensions)) {
             $extension = strtolower($file->getClientOriginalExtension());
             if (!in_array($extension, $allowedExtensions)) {
-                $errors[] = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_INVALID_TYPE);
+                $errors[] = CodeConst::getCodeMsg(CodeConst::FILE_INVALID_TYPE);
             }
         }
 
@@ -71,7 +71,7 @@ class File
         $fileSizeMB = $file->getSize() / 1024 / 1024;
         if ($fileSizeMB > $maxSize) {
             $errors[] = sprintf(
-                CodeConst::getErrorCodeConstMessages(CodeConst::FILE_TOO_LARGE),
+                CodeConst::getCodeMsg(CodeConst::FILE_TOO_LARGE),
                 self::formatFileSize($maxSize * 1024 * 1024),
                 self::formatFileSize($file->getSize())
             );
@@ -119,7 +119,7 @@ class File
             $fPath = 'app/public/' . $path;
             if ($path == 'false') {
                 // 上传失败
-                $result = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_UPLOAD_FAILED);
+                $result = CodeConst::getCodeMsg(CodeConst::FILE_UPLOAD_FAILED);
             } else {
                 $addFile = Files::addFile(
                     $name,
@@ -135,7 +135,7 @@ class File
                 );
                 if (!$addFile) {
                     // 存储失败
-                    $result = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_STORAGE_FAILED);
+                    $result = CodeConst::getCodeMsg(CodeConst::FILE_STORAGE_FAILED);
                     // 删除文件
                     @unlink($fPath);
                 } else {
@@ -188,12 +188,12 @@ class File
 
         // 验证是否存储存在
         if (empty($atFile)) {
-            return CodeConst::getErrorCodeConstMessages(CodeConst::DATA_NOT_FOUND);
+            return CodeConst::getCodeMsg(CodeConst::DATA_NOT_FOUND);
         }
 
         // 限制重复提交
         if ($atFile->status == Files::$status[3]) {
-            return CodeConst::getErrorCodeConstMessages(CodeConst::DATA_DUPLICATE);
+            return CodeConst::getCodeMsg(CodeConst::DATA_DUPLICATE);
         }
 
         // 限制重复上传分片
@@ -201,7 +201,7 @@ class File
         $chunkIndexS = array_column($atFileChunk, 'chunk_index');
         if (in_array($chunkIndex, $chunkIndexS)) {
             return sprintf(
-                CodeConst::getErrorCodeConstMessages(CodeConst::FILE_SAVE_FAILED),
+                CodeConst::getCodeMsg(CodeConst::FILE_SAVE_FAILED),
                 '[' . implode('|', $chunkIndexS) . ']'
             );
         }
@@ -217,7 +217,7 @@ class File
             try {
                 if ($path == 'false') {
                     // 上传失败
-                    $result = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_UPLOAD_FAILED);
+                    $result = CodeConst::getCodeMsg(CodeConst::FILE_UPLOAD_FAILED);
                 } else {
                     $addResult = FilesChunks::addChunk(
                         name: $file->getClientOriginalName(),
@@ -229,7 +229,7 @@ class File
                     );
                     if (!$addResult) {
                         // 存储失败
-                        $result = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_STORAGE_FAILED);
+                        $result = CodeConst::getCodeMsg(CodeConst::FILE_STORAGE_FAILED);
                         // 删除文件
                         @unlink($fPath);
                     } else {
@@ -269,12 +269,12 @@ class File
 
         // 验证是否存储存在
         if (empty($atFile)) {
-            return CodeConst::getErrorCodeConstMessages(CodeConst::DATA_NOT_FOUND);
+            return CodeConst::getCodeMsg(CodeConst::DATA_NOT_FOUND);
         }
 
         // 验证是否已融合
         if ($atFile->status == Files::$status[3]) {
-            return CodeConst::getErrorCodeConstMessages(CodeConst::DATA_DUPLICATE);
+            return CodeConst::getCodeMsg(CodeConst::DATA_DUPLICATE);
         }
 
         // 校验分片数量是否达标
@@ -283,7 +283,7 @@ class File
             ->get()
             ->toArray();
         if ($fCount != count($chunkS)) {
-            return CodeConst::getErrorCodeConstMessages(CodeConst::FILE_COUNT_FAILED);
+            return CodeConst::getCodeMsg(CodeConst::FILE_COUNT_FAILED);
         }
 
         // 区分存储位置并融合文件
@@ -297,7 +297,7 @@ class File
                 $chunkPath = storage_path($chunk['path']);
                 if (!file_exists($chunkPath)) {
                     fclose($out);
-                    return CodeConst::getErrorCodeConstMessages(CodeConst::FILE_MISSING_FAILED);
+                    return CodeConst::getCodeMsg(CodeConst::FILE_MISSING_FAILED);
                 }
                 $in = fopen($chunkPath, 'rb');
                 while (!feof($in)) {
@@ -321,13 +321,13 @@ class File
             $atFile->status = Files::$status[3];
             $atFile->updated_at = now();
             if (!$atFile->save()) {
-                $result = CodeConst::getErrorCodeConstMessages(CodeConst::DATA_UPDATE_FAILED);
+                $result = CodeConst::getCodeMsg(CodeConst::DATA_UPDATE_FAILED);
                 // 删除文件
                 @unlink($targetFile);
             }
 
         } else {
-            return CodeConst::getErrorCodeConstMessages(CodeConst::FILE_MISSING_FAILED);
+            return CodeConst::getCodeMsg(CodeConst::FILE_MISSING_FAILED);
         }
 
         return $result;
@@ -361,10 +361,10 @@ class File
         $atFile = Files::codeToFiles($fCode);
 
         if (empty($atFile)) {
-            $result['msg'] = CodeConst::getErrorCodeConstMessages(CodeConst::DATA_NOT_FOUND);
+            $result['msg'] = CodeConst::getCodeMsg(CodeConst::DATA_NOT_FOUND);
         }
         if ($atFile->status == Files::$status[3]) {
-            $result['msg'] = CodeConst::getErrorCodeConstMessages(CodeConst::FILE_SUCCESS_FAILED);
+            $result['msg'] = CodeConst::getCodeMsg(CodeConst::FILE_SUCCESS_FAILED);
         } else {
             // 查询分片信息
             $chunkS = FilesChunks::where('file_id', $atFile->id)
@@ -458,7 +458,7 @@ class File
         $user = UserInfo::userInfo();
         $file = Files::find($fileId);
         if (empty($file)) {
-            return CodeConst::getErrorCodeConstMessages(CodeConst::FILE_MISSING_FAILED);
+            return CodeConst::getCodeMsg(CodeConst::FILE_MISSING_FAILED);
         }
         if (!empty($params['file_name'])) {
             $params['file_name'] = $params['file_name'] . '.' . $file->file_extension;
@@ -469,7 +469,7 @@ class File
         $params['updated_by'] = $user->id;
         $file->fill($params);
         if (!$file->save()) {
-            return CodeConst::getErrorCodeConstMessages(CodeConst::DATA_UPDATE_FAILED);
+            return CodeConst::getCodeMsg(CodeConst::DATA_UPDATE_FAILED);
         }
         return $data;
     }

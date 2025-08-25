@@ -83,7 +83,7 @@ class CodeConst
     // =======================
     // 方法获取错误提示信息
     // =======================
-    public static function getErrorCodeConstMessages($code)
+    public static function getCodeMsg($code)
     {
         $messages = [
             // 登录错误

@@ -55,7 +55,7 @@ class MiddlewareConfigurator
         }
         if ($ipCache || $ipInfo) {
             $result['code'] = CodeConst::SYSTEM_BLACKLIST_RESTRICTED_ACCESS;
-            $result['message'] = CodeConst::getErrorCodeConstMessages($result['code']);
+            $result['message'] = CodeConst::getCodeMsg($result['code']);
         }
         return $result;
     }

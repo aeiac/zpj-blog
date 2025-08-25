@@ -66,7 +66,7 @@ class SystemServices extends BaseAdminServices
                 'status' => SystemBlackList::STATUS_ACTIVE
             ])->exists();
             if ($IpExists) {
-                return $this->eMsg::getErrorCodeConstMessages(code: $this->eMsg::DATA_DUPLICATE);
+                return $this->eMsg::getCodeMsg(code: $this->eMsg::DATA_DUPLICATE);
             }
         }
         $input = Arr::only($input, ['ip_address', 'reason', 'status']);

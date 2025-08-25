@@ -27,11 +27,11 @@ class LinkServices extends BaseAdminServices
         $result = '';
         $link = Links::where('url', $params['url'])->where('is_delete', 0)->first();
         if (!empty($link)) {
-            return CodeConst::getErrorCodeConstMessages(CodeConst::DATA_DUPLICATE);
+            return CodeConst::getCodeMsg(CodeConst::DATA_DUPLICATE);
         }
         $addResult = (new links())->addLinks($params['name'], $params['url'], $params['type']);
         if (empty($addResult)) {
-            return CodeConst::getErrorCodeConstMessages(CodeConst::DATA_SAVE_FAILED);
+            return CodeConst::getCodeMsg(CodeConst::DATA_SAVE_FAILED);
         }
         return $result;
     }

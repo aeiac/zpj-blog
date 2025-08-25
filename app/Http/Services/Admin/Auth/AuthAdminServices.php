@@ -30,7 +30,7 @@ class AuthAdminServices extends BaseAdminServices
         // 校验密码
         if (!$adminUser || !Hash::check($input['password'] . $adminUser->salt, $adminUser->password) || $adminUser->status == AdminUsers::STATUS_INACTIVE) {
             // 账号或密码错误
-             $data['msg'] = CodeConst::getErrorCodeConstMessages(CodeConst::LOGIN_USER_NOT_FOUND_OR_PASSWORD);
+             $data['msg'] = CodeConst::getCodeMsg(CodeConst::LOGIN_USER_NOT_FOUND_OR_PASSWORD);
              return $data;
         }
         $token = TokensUtils::getCache($adminUser->id, 'token');
@@ -60,11 +60,11 @@ class AuthAdminServices extends BaseAdminServices
         $uObj = AdminUsers::find($uid);
         // 判断用户存不存在
         if (empty($uObj)) {
-            return CodeConst::getErrorCodeConstMessages(CodeConst::LOGIN_USER_NOT_FOUND_OR_PASSWORD);
+            return CodeConst::getCodeMsg(CodeConst::LOGIN_USER_NOT_FOUND_OR_PASSWORD);
         }
         $uObj->last_login_time = Carbon::now()->format('Y-m-d H-i-s');
         if (!TokensUtils::clearAdminUserCache($uid) && !$uObj->save()) {
-            return CodeConst::getErrorCodeConstMessages(CodeConst::LOGIN_OUT);
+            return CodeConst::getCodeMsg(CodeConst::LOGIN_OUT);
         }
         return $result;
     }

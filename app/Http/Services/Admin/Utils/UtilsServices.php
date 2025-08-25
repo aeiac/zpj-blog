@@ -65,11 +65,11 @@ class UtilsServices extends BaseAdminServices
         }
 
         if (empty($permissions)) {
-            return CodeConst::getErrorCodeConstMessages(CodeConst::TEMPLATE_NOT_FOUND);
+            return CodeConst::getCodeMsg(CodeConst::TEMPLATE_NOT_FOUND);
         }
         $inserted = AdminPermission::insert($permissions);
         if(empty($inserted)){
-            return CodeConst::getErrorCodeConstMessages(CodeConst::GENERATE_FAILED);
+            return CodeConst::getCodeMsg(CodeConst::GENERATE_FAILED);
         }
         return  $data;
     }

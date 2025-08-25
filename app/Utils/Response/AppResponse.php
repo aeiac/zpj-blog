@@ -86,7 +86,7 @@ class AppResponse
     {
         if ($code != 400) {
             if ($msg == 'error') {
-                $msg = CodeConst::getErrorCodeConstMessages($code);
+                $msg = CodeConst::getCodeMsg($code);
             }
         }
         return [
