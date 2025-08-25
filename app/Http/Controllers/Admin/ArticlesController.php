@@ -8,10 +8,10 @@ use App\Http\Services\Admin\Articles\ArticlesServices;
 
 class ArticlesController extends BaseController
 {
-    public function list(Request $request, ArticlesServices $services): JsonResponse
+    public function list(Request $request, ArticlesServices $services): array
     {
         $input = $request->all();
         $data = $services->getSelectArticlesTable($input);
-        return $this->appResponse::success($data);
+        return $this->appResponse::successToArray($data);
     }
 }
