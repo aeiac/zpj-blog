@@ -63,6 +63,6 @@ class FilesBusiness extends BaseModel
      */
     public static function getFiles(int $bId): array
     {
-        return self::where('business_id', $bId)->where('status', self::$status[0])->get('file_id')->toArray();
+        return array_column(self::where('business_id', $bId)->where('status', self::$status[0])->get('file_id')->toArray(), 'file_id');
     }
 }
