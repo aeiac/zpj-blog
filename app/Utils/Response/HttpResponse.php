@@ -2,6 +2,7 @@
 
 namespace App\Utils\Response;
 
+use App\Const\Admin\CodeConst;
 use Illuminate\Http\JsonResponse;
 
 class HttpResponse
@@ -11,27 +12,33 @@ class HttpResponse
      *
      * @param mixed|null $data 响应数据
      *
-     * @return JsonResponse
+     * @return array
      */
-    public static function success(mixed $data = null): JsonResponse
+    public static function success(mixed $data = null): array
     {
-        return response()->json($data);
+        return $data;
     }
 
     /**
      * 返回失败响应
      *
-     * @param string $message 错误消息
-     * @param int $statusCode HTTP 状态码
+     * @param string $msg 错误消息
+     * @param int $code HTTP 状态码
      *
-     * @return JsonResponse
+     * @return array
      */
-    public static function error(string $message = '请求失败', int $statusCode = 400): JsonResponse
+    public static function error(string $msg= 'error', int $code = 400): array
     {
-        return response()->json([
-            'code' => $statusCode,
-            'message' => $message,
-        ]);
+        if ($code != 400) {
+            if ($msg == 'error') {
+                $msg = CodeConst::getCodeMsg($code);
+            }
+        }
+        return [
+            'code' => $code,
+            'msg'  => $msg,
+            'data' => $data ?? [],
+        ];
     }
 
     /**
@@ -40,14 +47,14 @@ class HttpResponse
      * @param string $message 错误消息
      * @param int $statusCode HTTP 状态码
      *
-     * @return JsonResponse
+     * @return array
      */
-    public static function unauthorized(string $message = '未授权', int $statusCode = 401): JsonResponse
+    public static function unauthorized(string $message = '未授权', int $statusCode = 401): array
     {
-        return response()->json([
+        return [
             'code' => $statusCode,
             'message' => $message,
-        ]);
+        ];
     }
 
     /**

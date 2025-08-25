@@ -48,7 +48,7 @@ class BaseController extends Controller
 
     public $tokensUtils;
 
-    public function __construct(HttpResponse $httpResponse, AppResponse $appResponse, TokensUtils $tokensUtils,CodeConst $msg)
+    public function __construct(HttpResponse $httpResponse, AppResponse $appResponse, TokensUtils $tokensUtils, CodeConst $msg)
     {
         $this->appResponse = $appResponse;
         $this->httpResponse = $httpResponse;
@@ -61,12 +61,13 @@ class BaseController extends Controller
     /**
      * @param $method
      * @param $parameters
-     * @return JsonResponse
+     * @return array
      */
-    public function callAction($method, $parameters): JsonResponse
+    public function callAction($method, $parameters): array
     {
         $response = $this->initial($method);
-        if ($response instanceof JsonResponse) {
+
+        if (!empty($response)) {
             return $response;
         }
         if (!method_exists($this, $method)) {
@@ -82,7 +83,7 @@ class BaseController extends Controller
      *
      * @param $method
      *
-     * @return JsonResponse|void|null
+     * @return array|void|null
      */
     private function initial($method)
     {
@@ -94,10 +95,13 @@ class BaseController extends Controller
         }
         $adminUserInfo = $this->tokensUtils::getCache($this->accessToken, 'session');
         $this->adminUserInfo = json_decode($adminUserInfo);
-        // TODO 因未配置权限所以暂时关闭，超管无视所有权限
-//        if ($this->systemAdminAuthPermission()) {
-//            return $this->errorJson(400, '无此权限！');
-//        }
+
+        // 超级管理员跳过鉴权
+        if (!in_array('Administrator', $this->adminUserInfo->role->name)) {
+            if ($this->systemAdminAuthPermission()) {
+                return httpResponse::error(code: CodeConst::AUTH_FORBIDDEN);
+            }
+        }
     }
 
     /**
@@ -107,7 +111,7 @@ class BaseController extends Controller
     public function addAdminUsersLog(): void
     {
         AdminUsersLog::create([
-            'admin_users_id' => $this->adminUserInfo->id ?? 0,
+            'admin_users_id' => $this->adminUserInfo->info->id ?? 0,
             'path' => Request::path(),
             'request' => json_encode(Request::all(), JSON_UNESCAPED_UNICODE),
             'ip' => Request::ip(),

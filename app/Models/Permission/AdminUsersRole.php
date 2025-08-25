@@ -17,4 +17,11 @@ class AdminUsersRole extends BaseModel
         return $this->belongsTo(AdminRole::class, 'role_id', 'id')
             ->select(['id', 'role_name']);
     }
+
+
+    // 根据用户ID查询角色
+    public static function findUserId(int $uId):array
+    {
+        return self::where('users_id', $uId)->where('status', 'active')->get('role_id')->toArray();
+    }
 }

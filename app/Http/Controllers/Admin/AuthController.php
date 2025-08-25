@@ -53,7 +53,7 @@ class AuthController extends BaseController
      */
     public function out(AuthAdminServices $services): array
     {
-        $result = $services->out($this->adminUserInfo->id);
+        $result = $services->out($this->adminUserInfo->info->id);
         if (!empty($result)) {
             return $this->appResponse::errorToArray(msg: $result);
         }

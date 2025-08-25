@@ -4,6 +4,8 @@ namespace App\Http\Services\Admin\Auth;
 
 use App\Const\Admin\CodeConst;
 use App\Http\Services\Admin\BaseAdminServices;
+use App\Models\Permission\AdminRole;
+use App\Models\Permission\AdminUsersRole;
 use App\Utils\Admin\TokensUtils;
 use App\Models\AdminUsers;
 use Carbon\Carbon;
@@ -39,7 +41,16 @@ class AuthAdminServices extends BaseAdminServices
         }
         $token = Str::random(60);
         TokensUtils::setCache($adminUser->id, 'token', $token);
-        TokensUtils::setCache($token, 'session', json_encode($adminUser, JSON_UNESCAPED_UNICODE));
+        $roleS = AdminUsersRole::findUserId($adminUser->id);
+        $role = AdminRole::whereIn('id', array_column($roleS, 'role_id'))->get(['id', 'role_name'])->toArray();
+        $adminInfoAll = [
+            'info' => $adminUser,
+            'role' => [
+                'id' => array_column($role, 'id'),
+                'name' => array_column($role, 'role_name')
+            ]
+        ];
+        TokensUtils::setCache($token, 'session', json_encode($adminInfoAll, JSON_UNESCAPED_UNICODE));
         $data += [
             'name'            => $adminUser->name,
             'nickname'        => $adminUser->nickname,
