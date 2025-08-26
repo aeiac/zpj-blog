@@ -2,8 +2,10 @@
 
 namespace App\Http\Services\Admin\Systems;
 
+use App\Const\Admin\CodeConst;
 use App\Const\Admin\RedisKeyConst;
 use App\Http\Services\Admin\BaseAdminServices;
+use App\Models\Systems\PageLayout;
 use App\Models\Systems\SystemBlackList;
 use App\Utils\Redis\RedisCache;
 use Illuminate\Support\Arr;
@@ -76,4 +78,65 @@ class SystemServices extends BaseAdminServices
         }
         return $data;
     }
+
+    /**
+     * 获取分页列表
+     *
+     * @param array $params
+     *  - name        string  模糊搜索业务名称
+     *  - status      int     状态过滤
+     *  - page_name   string  页面名称
+     *  - area        string  区域
+     *  - is_deleted  int     逻辑删除状态（0=未删除，1=已删除）
+     *  - per_page    int     每页数量，默认 15
+     *
+     * @return array
+     */
+    public static function getPageLayoutList(array $params): array
+    {
+        $data = [];
+        $query = PageLayout::query();
+
+        if (!empty($params['name'])) {
+            $query->where('name', 'like', '%' . $params['name'] . '%');
+        }
+
+        if (isset($params['status'])) {
+            $query->where('status', $params['status']);
+        }
+
+        if (!empty($params['page_name'])) {
+            $query->where('page_name', $params['page_name']);
+        }
+
+        if (!empty($params['area'])) {
+            $query->where('area', $params['area']);
+        }
+
+        if (isset($params['is_deleted'])) {
+            $query->where('is_deleted', $params['is_deleted']);
+        } else {
+            // 默认只查未删除的
+            $query->where('is_deleted', 0);
+        }
+        // 分页参数
+        $perPage = isset($params['per_page']) && is_numeric($params['per_page']) ? (int)$params['per_page'] : 10;
+
+        // 查询并分页
+        $query = $query->orderByDesc('created_at')->paginate($perPage)->toArray();
+        $data['info'] = BaseAdminServices::paginateToArray($query);
+        return $data;
+    }
+
+    // 新增一条页面配置记录
+    public static function addPageLayout(array $params): string
+    {
+        $data = '';
+        $addResult = PageLayout::addPageLayout($params);
+        if (empty($addResult)) {
+            return CodeConst::getCodeMsg(CodeConst::DATA_SAVE_FAILED);
+        }
+        return $data;
+    }
+
 }

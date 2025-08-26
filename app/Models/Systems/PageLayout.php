@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Utils;
+namespace App\Models\Systems;
 
 use App\Models\BaseModel;
 
@@ -30,7 +30,8 @@ class PageLayout extends BaseModel
         'updated_by',
     ];
 
-    public static function add(array $data)
+
+    public static function addPageLayout(array $data) :object
     {
         return self::create($data);
     }
