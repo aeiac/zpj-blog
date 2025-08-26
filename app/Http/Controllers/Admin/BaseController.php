@@ -10,7 +10,6 @@ use App\Utils\Response\HttpResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Request;
 use App\Utils\Admin\TokensUtils;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class BaseController extends Controller
 {
