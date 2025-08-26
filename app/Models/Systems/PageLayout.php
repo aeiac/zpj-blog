@@ -25,6 +25,7 @@ class PageLayout extends BaseModel
         'size',
         'interaction',
         'remarks',
+        'type',
         'deleted_at',
         'created_by',
         'updated_by',

@@ -5,7 +5,6 @@ namespace App\Http\Services\Admin\Link;
 use App\Const\Admin\CodeConst;
 use App\Http\Services\Admin\BaseAdminServices;
 use App\Models\Link\Links;
-use Illuminate\Http\Request;
 
 class LinkServices extends BaseAdminServices
 {

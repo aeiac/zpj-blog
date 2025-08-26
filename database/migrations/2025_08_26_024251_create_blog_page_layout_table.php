@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('icon_url',255)->comment('图标链接');
             $table->tinyInteger('is_deleted')->default(0)->comment('逻辑删除状态 0=未删除,1=已删除');
             $table->string('page_name', 100)->comment('页面名称');
+            $table->string('type', 100)->comment('类型');
+
             $table->string('area', 50)->default('deflate')->comment('区域名，如 top_nav、sidebar、content、footer');
             $table->string('position', 50)->default('deflate')->comment('位置，如 top、left、center、bottom、modal');
             $table->text('function_desc')->nullable()->comment('功能说明，该区域的作用描述');
