@@ -50,4 +50,25 @@ class ArticlesController extends BaseController
         return $this->appResponse::successToArray();
 
     }
+
+    // 操作
+    public function opertion(Request $request)
+    {
+        $params = $request->all();
+        $validation = Validator::make($params, [
+            'title'       => 'nullable|string|max:200',
+            'secret'      => 'nullable|string|max:16',
+            'content'     => 'nullable|string',
+            'type_id'     => 'nullable|string',
+            'status'      => 'nullable|string|in:'.implode(',',Articlesr::$status),
+            'published_at'=> 'nullable|date',
+            'sort'        => 'nullable|integer',
+            'is_deleted'  => 'nullable|integer'
+        ]);
+        if ($validation->fails()) {
+            return $this->appResponse::errorToArray(msg: $validation->errors()->first());
+        }
+
+
+    }
 }
