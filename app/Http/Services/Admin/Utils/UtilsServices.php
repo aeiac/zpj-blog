@@ -34,7 +34,7 @@ class UtilsServices extends BaseAdminServices
         $now         = now();
 
         // 获取数据库中已有 active 权限 content
-        $existingUris = AdminPermission::where('status', AdminPermission::STATUS_ACTIVE)
+        $existingUris = AdminPermission::where('status', AdminPermission::$status[0])
             ->pluck('content')
             ->toArray();
 

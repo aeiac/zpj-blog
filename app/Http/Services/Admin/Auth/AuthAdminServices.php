@@ -39,7 +39,7 @@ class AuthAdminServices extends BaseAdminServices
         if ($token) {
             TokensUtils::clearAdminUserCache($adminUser->id);
         }
-        $token = Str::random(60);
+        $token = Str::random(180);
         TokensUtils::setCache($adminUser->id, 'token', $token);
         $roleS = AdminUsersRole::findUserId($adminUser->id);
         $role = AdminRole::whereIn('id', array_column($roleS, 'role_id'))->get(['id', 'role_name'])->toArray();

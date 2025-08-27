@@ -31,6 +31,8 @@ Route::prefix('admin')->middleware([AdminGlobalFunMiddleware::class])->group(fun
     // 权限管理模块
     Route::prefix('permission')->group(function () {
         Route::get('/admins', [PermissionController::class, 'admins']);
+        Route::get('/roles', [PermissionController::class, 'roles']);
+        Route::get('/list', [PermissionController::class, 'permissionList']);
     });
 
     // 文章管理模块

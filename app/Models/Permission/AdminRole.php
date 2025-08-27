@@ -12,4 +12,9 @@ class AdminRole extends BaseModel
 
     public $timestamps = true;
 
+    public static array $status = [
+        0 => 'active',
+        1 => 'inactive'
+    ];
+
 }
