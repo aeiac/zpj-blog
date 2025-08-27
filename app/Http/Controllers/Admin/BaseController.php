@@ -45,7 +45,7 @@ class BaseController extends Controller
      */
     public AppResponse $appResponse;
 
-    public $tokensUtils;
+    public TokensUtils $tokensUtils;
 
     public function __construct(HttpResponse $httpResponse, AppResponse $appResponse, TokensUtils $tokensUtils, CodeConst $msg)
     {
