@@ -18,12 +18,12 @@ use Illuminate\Support\Str;
 class UtilsServices extends BaseAdminServices
 {
     /**
-     * 批量生成系统中未注册的权限记录
+     * 自动生成权限（包括父级路由，并设置父级ID f_id）
      *
-     * @param array  $params         额外参数（预留，当前未使用）
-     * @param object $adminUsersInfo 当前操作的管理员信息对象
+     * @param array $params 参数（可用于未来扩展）
+     * @param object $adminUsersInfo 当前管理员信息
      *
-     * @return array  统一格式的响应数组（成功或失败信息）
+     * @return array
      */
     public function generatePermission(array $params, object $adminUsersInfo): array
     {
@@ -33,66 +33,77 @@ class UtilsServices extends BaseAdminServices
         $adminId     = $adminUsersInfo->id ?? 0;
         $now         = now();
 
-        // 获取数据库中已有 active 权限 content
-        $existingUris = AdminPermission::where('status', AdminPermission::$status[0])
-            ->pluck('content')
-            ->toArray();
+        // 数据库中已有 active 权限 content
+        $existingPermissions = AdminPermission::where('status', AdminPermission::$status[0])
+            ->get(['id', 'content'])
+            ->keyBy('content');
 
         foreach ($routes as $route) {
-            $uri = $route->uri();
-
-            // 跳过不需要的路由
-            if ($uri === 'up') {
+            $uri = trim(preg_replace('/{.*?}/', '', $route->uri()), '/');
+            if (!$uri || $uri === 'up') {
                 continue;
             }
 
-            // 去掉路由参数
-            $uri = preg_replace('/{.*?}/', '', $uri);
-            $uri = trim($uri, '/');
+            $uriParts = collect(explode('/', $uri))->filter()->values();
+            $parentId = 0; // 顶级权限
 
-            // 数据库已有权限跳过
-            if (in_array($uri, $existingUris)) {
-                continue;
+            foreach ($uriParts as $i => $part) {
+                $subUri = $uriParts->slice(0, $i + 1)->implode('/'); // 当前层级 URI
+                $key = $uriParts->slice(0, $i + 1)->implode('.');     // 当前层级 key
+
+                // 如果已存在数据库权限，获取 ID
+                if (isset($existingPermissions[$subUri])) {
+                    $parentId = $existingPermissions[$subUri]->id;
+                    continue;
+                }
+
+                // 新权限
+                $permissions[] = [
+                    'name'       => $key,
+                    'code'       => substr(md5(uniqid((string)mt_rand(), true)), 0, 9),
+                    'content'    => $subUri,
+                    'f_id'       => $parentId,
+                    'created_by' => $adminId,
+                    'updated_by' => $adminId,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+
+                // 临时给 parentId，用于下一层级
+                $parentId = null; // 插入后会更新 ID
             }
-
-            // 转换为权限 key 格式：admin.utils.file.chunks.upload
-            $key = Str::of($uri)
-                ->replace('/', '.')
-                ->replaceMatches('/\.\.+/', '.')
-                ->trim('.')
-                ->__toString();
-
-            $permissions[] = [
-                'name'       => $key,
-                'code'       => substr(md5(uniqid((string)mt_rand(), true)), 0, 9),
-                'content'    => $uri,
-                'created_by' => $adminId,
-                'updated_by' => $adminId,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ];
         }
 
-        // 如果没有新权限
         if (empty($permissions)) {
             $data['msg'] = CodeConst::getCodeMsg(CodeConst::TEMPLATE_NOT_FOUND);
             return $data;
         }
 
-        // 去重，防止同一次循环中重复
+        // 去重 content
         $permissions = collect($permissions)->unique('content')->values()->all();
 
         // 插入数据库
-        $inserted = AdminPermission::insert($permissions);
-        if (!$inserted) {
-            $data['msg'] = CodeConst::getCodeMsg(CodeConst::GENERATE_FAILED);
-            return $data;
+        foreach ($permissions as $index => $perm) {
+            $insertedId = AdminPermission::insertGetId($perm); // 插入单条记录，获取 ID
+            $permissions[$index]['id'] = $insertedId;
         }
 
-        // 成功返回
+        // 更新 f_id：循环设置每条权限的父级 ID
+        foreach ($permissions as $index => $perm) {
+            if ($perm['f_id'] === null) {
+                $parentUri = collect(explode('.', $perm['name']))->slice(0, -1)->implode('/');
+                if ($parentUri && $parent = AdminPermission::where('content', $parentUri)->first()) {
+                    AdminPermission::where('id', $perm['id'])->update(['f_id' => $parent->id]);
+                }
+            }
+        }
+
         return [
-            'msg' => CodeConst::getCodeMsg(CodeConst::PERMISSION_GENERATE_SUCCESS),
-            'count' => count($permissions),
+            'msg'         => CodeConst::getCodeMsg(CodeConst::PERMISSION_GENERATE_SUCCESS),
+            'count'       => count($permissions),
+            'permissions' => $permissions,
         ];
     }
+
+
 }
