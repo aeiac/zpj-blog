@@ -35,11 +35,10 @@ class Links extends  BaseModel
     /**
      * 添加一个新的链接记录到 blog_links 表
      *
-     * @param string $name   链接名称/显示名称
-     * @param int    $status 状态：0=默认,1=启用,2=禁用
-     * @param int    $type   类型：1=业务链接、2=友链、3=链接（默认=3）
-     * @param string $url    链接地址（必须是合法 URL）
+     * @param string $name 链接名称/显示名称
+     * @param string $url 链接地址（必须是合法 URL）
      *
+     * @param int $type 类型：1=业务链接、2=友链、3=链接（默认=3）
      * @return object 返回新建的链接对象（Eloquent 模型实例）
      */
     public  function addLinks(string $name, string $url, int $type = 3): object

@@ -13,7 +13,6 @@ return new class extends Migration {
         Schema::create('blog_articles', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedBigInteger('article_id')->comment('文章ID');
             $table->string('code', 64)->nullable()->unique()->comment('文章编码');
             $table->string('title', 255)->comment('文章标题');
             $table->string('slug', 255)->unique()->comment('文章slug');
@@ -23,7 +22,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('author_id')->comment('作者ID');
             $table->unsignedInteger('type_id')->comment('分类ID');
             $table->string('type', 50)->nullable()->comment('文章类型');
-            $table->enum('status', ['draft', 'published', 'archived', 'disabled'])->default('draft')->comment('发布状态');
+            $table->tinyInteger('status')->default(0)->comment('文章状态：0=回收站、1=草稿、2=默认、4=待发布、5=已发布、6=已下线、7=禁用、8=定时发布、11=精选、12=私密、13=推流文章');
             $table->unsignedInteger('sort')->default(0)->comment('排序值');
             $table->timestamp('published_at')->nullable()->comment('发布时间');
             $table->boolean('is_deleted')->default(false)->comment('是否软删除');
