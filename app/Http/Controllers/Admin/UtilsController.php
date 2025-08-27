@@ -15,7 +15,6 @@ use App\Utils\File;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class UtilsController extends BaseController
 {
