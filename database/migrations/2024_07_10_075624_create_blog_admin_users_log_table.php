@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id()->comment('表id');
             $table->unsignedInteger('admin_users_id')->nullable(false)->comment('管理员id');
             $table->string('path')->nullable(false)->comment('请求来源');
-            $table->string('request')->nullable(false)->comment('提交参数');
+            $table->mediumtext('request')->nullable(false)->comment('提交参数');
             $table->string('ip')->nullable(false)->comment('操作ip');
             $table->string('ua')->nullable(false)->comment('操作环境');
             $table->timestamp('created_at')->nullable(false)->comment('创建时间');

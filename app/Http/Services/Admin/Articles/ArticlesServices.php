@@ -2,6 +2,7 @@
 
 namespace App\Http\Services\Admin\Articles;
 
+use App\Const\Admin\CodeConst;
 use App\Models\Articles\Articlesr;
 use App\Http\Services\Admin\BaseAdminServices;
 
@@ -76,9 +77,46 @@ class ArticlesServices extends BaseAdminServices
     }
 
 
-    // 新增一篇文章
+    /**
+     * 新增一篇文章
+     *
+     * 说明：
+     * 1. 会检查 slug 是否重复，如果重复则返回提示信息。
+     * 2. 调用 Articlesr::addArticlesr 方法进行文章新增。
+     * 3. 如果新增失败，返回失败提示；否则返回空字符串表示成功。
+     *
+     * @param array $params 文章参数数组，包含以下键：
+     *                      - 'title'        : string, 文章标题
+     *                      - 'content'      : string, 文章内容
+     *                      - 'slug'         : string, 唯一标识
+     *                      - 'type_id'      : string, 文章分类ID
+     *                      - 'published_at' : string|null, 发布时间，可选
+     *                      - 'secret'       : string|null, 密码或加密标识，可选
+     *                      - 'status'       : int, 文章状态（参考 Articlesr::$status）
+     *
+     * @return string 返回结果：
+     *                - 如果 slug 重复，返回 "slug，数据重复" 提示
+     *                - 如果新增失败，返回 "数据保存失败" 提示
+     *                - 如果成功，返回空字符串 ''
+     */
     public function addArticle(array $params): string
     {
-
+        $data = '';
+        if(Articlesr::where('slug', $params['slug'])->exists()){
+            return 'slug，'.CodeConst::getCodeMsg(CodeConst::DATA_DUPLICATE);
+        };
+        $addResult = Articlesr::addArticlesr(
+            title: $params['title'],
+            content: $params['content'],
+            slug: $params['slug'],
+            typeId: $params['type_id'],
+            publishedAt: $params['published_at'] ?? '',
+            secret: $params['secret'] ?? '',
+            status: $params['status']
+        );
+        if (empty($addResult)) {
+            return CodeConst::getCodeMsg(CodeConst::DATA_SAVE_FAILED);
+        }
+        return $data;
     }
 }

@@ -18,7 +18,18 @@ class ArticlesController extends BaseController
     }
 
 
-    // 新增文章
+    /**
+     * 新增一篇文章
+     *
+     * 说明：
+     * 1. 会检查 slug 是否重复，如果重复则返回提示信息。
+     * 2. 调用 Articlesr::addArticlesr 方法进行文章新增。
+     * 3. 如果新增失败，返回失败提示；否则返回空字符串表示成功。
+     *
+     * @param Request $request
+     * @param ArticlesServices $services
+     * @return array
+     */
     public function add(Request $request, ArticlesServices $services):array
     {
         $params = $request->all();

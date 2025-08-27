@@ -15,30 +15,47 @@ class Articlesr extends BaseModel
     public $timestamps = true;
 
     public static array $status = [
-            0,  // '回收站',
-            1,  // '草稿',
-            2,  // '默认',
-            4,  // '待发布',
-            5,  // '已发布',
-            6,  // '已下线',
-            7,  // '禁用',
-            8,  // '定时发布',
-            11, // '精选',
-            12, // '私密',
-            13  // '推流文章',
+        0,  // '回收站',
+        1,  // '草稿',
+        2,  // '默认',
+        3,  // '待发布',
+        4,  // '已发布',
+        5,  // '已下线',
+        6,  // '禁用',
+        7,  // '定时发布',
+        8, // '精选',
+        9, // '私密',
+        10  // '推流文章',
     ];
 
+    protected $fillable = [
+        'code',
+        'title',
+        'slug',
+        'secret',
+        'is_secret',
+        'content',
+        'author_id',
+        'type_id',
+        'type',
+        'status',
+        'sort',
+        'published_at',
+        'is_deleted',
+        'created_by',
+        'updated_by',
+    ];
 
     /**
      * 新增文章
      *
-     * @param string $title        文章标题
-     * @param string $content      文章内容（支持富文本/Markdown）
-     * @param string $slug         文章唯一标识（Slug，用于URL友好）
-     * @param string $typeId       文章分类ID或类型标识
-     * @param string $publishedAt  发布时间（可定时发布，格式：Y-m-d H:i:s）
-     * @param string $secret       是否私密文章（如 '0' = 否，'1' = 是）
-     * @param int    $status
+     * @param string $title 文章标题
+     * @param string $content 文章内容（支持富文本/Markdown）
+     * @param string $slug 文章唯一标识（Slug，用于URL友好）
+     * @param string $typeId 文章分类ID或类型标识
+     * @param string $publishedAt 发布时间（可定时发布，格式：Y-m-d H:i:s）
+     * @param string $secret 是否私密文章（如 '0' = 否，'1' = 是）
+     * @param int $status
      *
      * @return object 新增后的文章对象
      */
@@ -58,21 +75,21 @@ class Articlesr extends BaseModel
 
         $user = UserInfo::userInfo();
         $data = [
-            'code'          => $code,
-            'title'         => $title,
-            'content'       => $content,
-            'slug'          => $slug,
-            'author_id'     => $user->id,
-            'type_id'       => $typeId,
-            'created_by'    => $user->id,
-            'updated_by'    => $user->id,
+            'code' => $code,
+            'title' => $title,
+            'content' => $content,
+            'slug' => $slug,
+            'author_id' => $user->info->id,
+            'type_id' => $typeId,
+            'created_by' => $user->info->id,
+            'updated_by' => $user->info->id,
         ];
 
         // 状态
         if (empty($status)) {
             $data['status'] = $status;
         } else {
-            $data['status'] = self::$status[5];
+            $data['status'] = self::$status[4];
         }
 
         // 发布时间
@@ -84,7 +101,7 @@ class Articlesr extends BaseModel
         // 文章是否加密
         if (!empty($secret)) {
             $data['secret'] = $secret;
-            $data['status'] = self::$status[12];
+            $data['status'] = self::$status[9];
             $data['is_secret'] = 1;
         }
 
