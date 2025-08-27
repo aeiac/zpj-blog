@@ -12,11 +12,14 @@ return new class extends Migration {
     {
         Schema::create('blog_articles', function (Blueprint $table) {
             $table->id();
+
             $table->unsignedBigInteger('article_id')->comment('文章ID');
             $table->string('code', 64)->nullable()->unique()->comment('文章编码');
             $table->string('title', 255)->comment('文章标题');
             $table->string('slug', 255)->unique()->comment('文章slug');
-            $table->text('content')->comment('内容');
+            $table->string('secret', 100)->nullable()->comment('密码');
+            $table->boolean('is_secret')->default(false)->comment('是否加密');
+            $table->mediumtext('content')->comment('内容');
             $table->unsignedBigInteger('author_id')->comment('作者ID');
             $table->unsignedInteger('type_id')->comment('分类ID');
             $table->string('type', 50)->nullable()->comment('文章类型');

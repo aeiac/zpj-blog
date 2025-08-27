@@ -38,6 +38,7 @@ Route::prefix('admin')->middleware([AdminGlobalFunMiddleware::class])->group(fun
     // 文章管理模块
     Route::prefix('article')->group(function () {
         Route::get('/list', [ArticlesController::class, 'list']);
+        Route::post('/add', [ArticlesController::class, 'add']);
     });
 
     // 链接管理

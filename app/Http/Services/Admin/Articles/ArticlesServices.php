@@ -74,4 +74,11 @@ class ArticlesServices extends BaseAdminServices
 
         return $this->appResponse::successToArray($data);
     }
+
+
+    // 新增一篇文章
+    public function addArticle(array $params): string
+    {
+
+    }
 }
