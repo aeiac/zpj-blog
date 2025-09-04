@@ -7,7 +7,6 @@ use App\Models\Permission\AdminPermission;
 use App\Models\Permission\AdminRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class PermissionController extends BaseController
 {
