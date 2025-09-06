@@ -30,7 +30,7 @@ class PermissionController extends BaseController
     /**
      * 获取角色列表
      *
-     * 支持按内容、状态和是否为顶级权限进行筛选，并返回分页结果。
+     * 支持按内容、状态和是否为顶级权限进行筛选，返回分页结果。
      *
      * @param Request $request
      * @param PermissionServices $services
@@ -80,5 +80,10 @@ class PermissionController extends BaseController
         return $this->appResponse::successToArray($result);
     }
 
+    // 操作角色
+    public function operateAdmin(Request $request, PermissionServices $services)
+    {
 
+
+    }
 }
