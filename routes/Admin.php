@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CallBackController;
 use App\Http\Controllers\Admin\LinkController;
 use Illuminate\Support\Facades\Route;
 
@@ -9,7 +10,6 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ArticlesController;
 use App\Http\Controllers\Admin\UtilsController;
 use App\Http\Middleware\Admin\GlobalFunMiddleware as AdminGlobalFunMiddleware;
-
 
 
 Route::prefix('admin')->middleware([AdminGlobalFunMiddleware::class])->group(function () {
@@ -26,6 +26,11 @@ Route::prefix('admin')->middleware([AdminGlobalFunMiddleware::class])->group(fun
             Route::get('/list', [SystemServicesController::class, 'blackList']);
             Route::post('/save', [SystemServicesController::class, 'blackListSave']);
         });
+    });
+
+    // 回调模块
+    Route::prefix('callback')->group(function () {
+        Route::match(['get', 'post'], '/test', [CallBackController::class, 'test']);
     });
 
     // 权限管理模块

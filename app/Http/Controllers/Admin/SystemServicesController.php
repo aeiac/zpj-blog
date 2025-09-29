@@ -70,25 +70,23 @@ class SystemServicesController extends BaseController
     {
         $params = $request->all();
         $validation = Validator::make($params, [
-            'name'           => 'required|string|max:200',
-            'icon_url'       => 'nullable|string|',
-            'page_name'      => 'nullable|string|max:200',
-            'area'           => 'nullable|string|max:50',
-            'function_desc'  => 'nullable|string',
-            'components'     => 'nullable|string',
-            'size'           => 'nullable|string|max:50',
-            'interaction'    => 'nullable|string|max:50',
-            'remarks'        => 'nullable|string|max:1000',
+            'name' => 'required|string|max:200',
+            'icon_url' => 'nullable|string|',
+            'page_name' => 'nullable|string|max:200',
+            'area' => 'nullable|string|max:50',
+            'function_desc' => 'nullable|string',
+            'components' => 'nullable|string',
+            'size' => 'nullable|string|max:50',
+            'interaction' => 'nullable|string|max:50',
+            'remarks' => 'nullable|string|max:1000',
         ]);
         if ($validation->fails()) {
             return $this->appResponse::errorToArray(msg: $validation->errors()->first());
         }
         $result = $services->addPageLayout($params);
-        if(!empty($result)){
+        if (!empty($result)) {
             return $this->appResponse::errorToArray(msg: $result);
         }
         return $this->appResponse::successToArray();
     }
-
-
 }
