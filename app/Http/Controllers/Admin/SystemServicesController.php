@@ -85,7 +85,7 @@ class SystemServicesController extends BaseController
         }
         $result = $services->addPageLayout($params);
         if (!empty($result)) {
-            return $this->appResponse::errorToArray(msg: $result);
+            return $this->appResponse::errorToArray();
         }
         return $this->appResponse::successToArray();
     }

@@ -127,6 +127,13 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        'daily_callback' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/admin-callback-' . date('Y-m-d') . '.log'),
+            'level' => 'debug',
+            'days' => 30, // 保留天数
+        ],
+
     ],
 
 ];

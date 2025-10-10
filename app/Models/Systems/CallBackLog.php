@@ -32,9 +32,16 @@ class CallBackLog extends BaseModel
         'deleted_at',
     ];
 
-    public static function add(array $data) :object
+    public static function add(array $data): object
     {
         return self::create($data);
     }
 
+    public static function codeFirst(string $code)
+    {
+        return self::where([
+            'code' => $code,
+            'is_deleted' => 0
+        ])->where('status', '!=', '0')->first();
+    }
 }
