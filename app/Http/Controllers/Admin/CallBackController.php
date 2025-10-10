@@ -2,22 +2,21 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Services\Admin\Systems\SystemServices;
+use App\Http\Services\Admin\Systems\CallBackServices;
 use Illuminate\Http\Request;
 
 class CallBackController extends BaseController
 {
     protected static array $excludedAuth = ['test'];
 
-
     // test系统回调
-    public function test(Request $request, SystemServices $services): array
+    public function test(Request $request, CallBackServices $services): array
     {
         $params = $request->all();
         if (empty($params)) {
             return $this->appResponse::errorToArray();
         }
-        $result = $services::callback($params);
+        $result = $services::test($params);
         if (!empty($result)) {
             return $this->appResponse::errorToArray(msg: $result);
         }
