@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Services\Admin\Systems\CallBackServices;
+use App\Utils\Api\TianApi;
 use Illuminate\Http\Request;
 
 class CallBackController extends BaseController
@@ -12,6 +13,9 @@ class CallBackController extends BaseController
     // test系统回调
     public function test(Request $request, CallBackServices $services): array
     {
+
+        $e=  TianApi::bfrsumBFR(178, 165, 23, 1);
+        dump($e);die;
         $params = $request->all();
         if (empty($params)) {
             return $this->appResponse::errorToArray();

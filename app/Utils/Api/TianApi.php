@@ -8,14 +8,14 @@ use Illuminate\Support\Facades\App;
 
 class TianApi
 {
-    private static string $url;
-    private static string $key;
+    private static string $url = '';
+    private static string $key = '';
 
-    protected function __construct()
+    public function __construct()
     {
         self::$url = env('TIAN_API_URL');
         self::$key = env('TIAN_API_EKY');
-        if(empty(self::$url) || empty(self::$key)){
+        if (empty(self::$url) || empty(self::$key)) {
             return AppResponse::errorToArray(msg: '天行数据env配置参数异常');
         }
     }
@@ -31,9 +31,19 @@ class TianApi
             'sex' => $sex,
         ];
         $result = (new CurlClientUtils())->setMethod(CurlClientUtils::METHOD_GET)->setData($data)->get($url);
-
+        return self::verify($result);
     }
 
-
-
+    private static function verify(string $result): array
+    {
+        $result = json_decode($result, true);
+        if (empty($result)) {
+            return AppResponse::errorToArray(msg: '接口返回参数为空');
+        }
+        if ($result['code'] !== 200) {
+            $msg = $result['msg'] ?? $result['message'] ?? '';
+            return AppResponse::errorToArray(msg: $msg);
+        }
+        return $result['result'];
+    }
 }
