@@ -26,7 +26,7 @@ return new class extends Migration
 
             // 时间字段
             $table->timestamps();
-            $table->comment('连接表');
+            $table->comment('链接表');
         });
     }
 
