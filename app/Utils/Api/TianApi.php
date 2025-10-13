@@ -4,6 +4,7 @@ namespace App\Utils\Api;
 
 use App\Utils\Curl\CurlClientUtils;
 use App\Utils\Response\AppResponse;
+use RuntimeException;
 
 class TianApi
 {
@@ -12,16 +13,16 @@ class TianApi
 
     private static array $data = [];
 
-    /** @noinspection PhpInconsistentReturnPointsInspection */
+
     public function __construct()
     {
 
-        self::$url = (string)env('TIAN_API_URL');
-        self::$key = (string)env('TIAN_API_KEY');
+        self::$url = (string)env('TIAN_API_URL') ?? '';
+        self::$key = (string)env('TIAN_API_KEY') ?? '';
         if (empty(self::$url) || empty(self::$key)) {
-            return AppResponse::errorToArray(msg: '天行数据env配置参数异常');
+            throw new RuntimeException('天行数据env配置参数异常');
         }
-        self::$data += ['key' => self::$key];
+        self::$data['key'] = self::$key;
     }
 
     /**
@@ -87,7 +88,7 @@ class TianApi
     }
 
     // 全网热搜 https://www.tianapi.com/apiview/223
-    public  static  function networkhot()
+    public  static  function networkhot():array
     {
         $url = self::$url . '/weibohot/index';
         $result = (new CurlClientUtils())->setMethod(CurlClientUtils::METHOD_GET)->setData(self::$data)->get($url);
