@@ -14,7 +14,7 @@ class CallBackController extends BaseController
     public function test(Request $request, CallBackServices $services): array
     {
 
-        $e = (new TianApi())->weather('福安');
+        $e = (new TianApi())->sfzQuery();
         dump($e);die;
         $params = $request->all();
         if (empty($params)) {

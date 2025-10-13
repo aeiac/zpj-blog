@@ -32,6 +32,7 @@ class TianApi
      * @param int $age 年龄（单位：岁）
      * @param int $sex 性别（1 表示男性，0 表示女性）
      *
+     * @link https://www.tianapi.com/apiview/266
      * @return array 返回包含体脂率计算结果的数组
      */
     public static function bfrsumBFR(int $height, int $weight, int $age, int $sex): array
@@ -69,7 +70,52 @@ class TianApi
         return self::verify($result);
     }
 
+    // 抖音热搜 https://www.tianapi.com/apiview/155
+    public static function douyinhot(): array
+    {
+        $url = self::$url . '/douyinhot/index';
+        $result = (new CurlClientUtils())->setMethod(CurlClientUtils::METHOD_GET)->setData(self::$data)->get($url);
+        return self::verify($result);
+    }
 
+    // 微博热搜 https://www.tianapi.com/apiview/100
+    public static function weibohot(): array
+    {
+        $url = self::$url . '/weibohot/index';
+        $result = (new CurlClientUtils())->setMethod(CurlClientUtils::METHOD_GET)->setData(self::$data)->get($url);
+        return self::verify($result);
+    }
+
+    // 全网热搜 https://www.tianapi.com/apiview/223
+    public  static  function networkhot()
+    {
+        $url = self::$url . '/weibohot/index';
+        $result = (new CurlClientUtils())->setMethod(CurlClientUtils::METHOD_GET)->setData(self::$data)->get($url);
+        return self::verify($result);
+    }
+
+
+    /**
+     * 根据身份证号码查询归属地及相关信息。
+     *
+     * 此方法通过调用天行数据（TianAPI）接口来获取身份证号码对应的省份、城市、
+     * 区县及发证机关等信息。
+     *
+     * @link https://www.tianapi.com/apiview/112
+     *
+     * @param string $idcard 身份证号码（支持 15 位或 18 位格式）
+     *
+     * @return array[]
+     */
+    public  static  function sfzQuery(string $idcard):array
+    {
+        $url = self::$url . '/sfz/index';
+        self::$data += [
+            'idcard' => $idcard
+        ];
+        $result = (new CurlClientUtils())->setMethod(CurlClientUtils::METHOD_GET)->setData(self::$data)->get($url);
+        return self::verify($result);
+    }
 
     private static function verify(string $result): array
     {
