@@ -70,7 +70,7 @@ class SystemServicesController extends BaseController
     {
         $params = $request->all();
         $validation = Validator::make($params, [
-            'name' => 'required|string|max:200',
+            'name' => 'nullable|string|max:200',
             'icon_url' => 'nullable|string|',
             'page_name' => 'nullable|string|max:200',
             'area' => 'nullable|string|max:50',
