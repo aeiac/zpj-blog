@@ -20,7 +20,7 @@ class TianApi
         self::$url = (string)env('TIAN_API_URL') ?? '';
         self::$key = (string)env('TIAN_API_KEY') ?? '';
         if (empty(self::$url) || empty(self::$key)) {
-            throw new RuntimeException('天行数据env配置参数异常');
+            throw new RuntimeException('天行数据环境配置参数异常');
         }
         self::$data['key'] = self::$key;
     }
