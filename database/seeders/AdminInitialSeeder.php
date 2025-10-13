@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-class AdminUsersSeeder extends Seeder
+class AdminInitialSeeder extends Seeder
 {
     /**
      * This is admin_user_table seeder data
