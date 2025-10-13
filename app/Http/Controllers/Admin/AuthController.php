@@ -40,8 +40,7 @@ class AuthController extends BaseController
         if ($validation->fails()) {
             return $this->appResponse::errorToArray(msg: $validation->errors()->first());
         }
-        $userBackResult = $services->login($input);
-        return $this->appResponse::successToArray(data: $userBackResult);
+        return $services->login($input);
     }
 
     /**

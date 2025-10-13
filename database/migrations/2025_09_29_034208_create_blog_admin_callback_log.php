@@ -35,6 +35,9 @@ return new class extends Migration
             $table->integer('retry_count')->default(0)->comment('回调处理重试次数，默认 0');
             $table->string('source_ip')->nullable()->comment('第三方发起回调的来源 IP');
             $table->timestamps();
+
+            $table->comment('系统后台接口回调表');
+
         });
     }
 

@@ -32,8 +32,7 @@ class AuthAdminServices extends BaseAdminServices
         // 校验密码
         if (!$adminUser || !Hash::check($input['password'] . $adminUser->salt, $adminUser->password) || $adminUser->status == AdminUsers::STATUS_INACTIVE) {
             // 账号或密码错误
-             $data['msg'] = CodeConst::getCodeMsg(CodeConst::LOGIN_USER_NOT_FOUND_OR_PASSWORD);
-             return $data;
+            return $this->appResponse::errorToArray(code: $this->eMsg::LOGIN_USER_NOT_FOUND_OR_PASSWORD);
         }
         $token = TokensUtils::getCache($adminUser->id, 'token');
         if ($token) {
@@ -62,7 +61,7 @@ class AuthAdminServices extends BaseAdminServices
         if (!$adminUser->save()) {
             return $this->appResponse::errorToArray(code: $this->eMsg::DATA_UPDATE_FAILED);
         }
-        return $data;
+        return $this->appResponse::successToArray($data);
     }
 
     public function out(int $uid): string
