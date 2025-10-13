@@ -4,7 +4,6 @@ namespace App\Utils\Api;
 
 use App\Utils\Curl\CurlClientUtils;
 use App\Utils\Response\AppResponse;
-use Illuminate\Support\Facades\App;
 
 class TianApi
 {
@@ -13,8 +12,9 @@ class TianApi
 
     public function __construct()
     {
-        self::$url = env('TIAN_API_URL');
-        self::$key = env('TIAN_API_EKY');
+
+        self::$url = (string)env('TIAN_API_URL');
+        self::$key = (string)env('TIAN_API_KEY');
         if (empty(self::$url) || empty(self::$key)) {
             return AppResponse::errorToArray(msg: '天行数据env配置参数异常');
         }

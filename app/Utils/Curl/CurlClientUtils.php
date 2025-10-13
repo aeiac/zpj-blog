@@ -11,20 +11,20 @@ namespace App\Utils\Curl;
 
 class CurlClientUtils
 {
-    // HTTP Methods
-    public const METHOD_GET = 'GET';
-    public const METHOD_POST = 'POST';
-    public const METHOD_PUT = 'PUT';
-    public const METHOD_DELETE = 'DELETE';
-    public const METHOD_PATCH = 'PATCH';
+// HTTP Methods
+    const METHOD_GET = 'GET';
+    const METHOD_POST = 'POST';
+    const METHOD_PUT = 'PUT';
+    const METHOD_DELETE = 'DELETE';
+    const METHOD_PATCH = 'PATCH';
 
     // Content Types
-    public const CONTENT_FORM = 'application/x-www-form-urlencoded';
-    public const CONTENT_JSON = 'application/json';
-    public const CONTENT_MULTIPART = 'multipart/form-data';
+    const CONTENT_FORM = 'application/x-www-form-urlencoded';
+    const CONTENT_JSON = 'application/json';
+    const CONTENT_MULTIPART = 'multipart/form-data';
 
     // Default options
-    private const DEFAULT_OPTIONS = [
+    const DEFAULT_OPTIONS = [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HEADER => false,
         CURLOPT_FOLLOWLOCATION => true,
@@ -33,12 +33,12 @@ class CurlClientUtils
         CURLOPT_CONNECTTIMEOUT => 15,
     ];
 
-    private string $url;
-    private string $method = self::METHOD_GET;
-    private array $headers = [];
+    private $url;
+    private $method = self::METHOD_GET;
+    private $headers = [];
     private $data;
-    private string $contentType = self::CONTENT_FORM;
-    private array $options = [];
+    private $contentType = self::CONTENT_FORM;
+    private $options = [];
 
     public function __construct(array $config = [])
     {
@@ -47,26 +47,30 @@ class CurlClientUtils
         $this->options = array_replace(self::DEFAULT_OPTIONS, $config['options'] ?? []);
     }
 
-    public function setMethod(string $method): self
+    // set Method
+    public function setMethod($method)
     {
         $this->method = strtoupper($method);
         return $this;
     }
 
-    public function setContentType(string $contentType): self
+    // set ContentType
+    public function setContentType($contentType): self
     {
         $this->contentType = $contentType;
         $this->setHeader('Content-Type', $contentType);
         return $this;
     }
 
-    public function setHeader(string $name, string $value): self
+    // set Header
+    public function setHeader($name,$value): self
     {
         $this->headers[$name] = $value;
         return $this;
     }
 
-    public function setHeaders(array $headers): self
+    // set Headers
+    public function setHeaders($headers): self
     {
         foreach ($headers as $name => $value) {
             $this->setHeader($name, $value);
@@ -74,18 +78,21 @@ class CurlClientUtils
         return $this;
     }
 
+    // set Data
     public function setData($data): self
     {
         $this->data = $data;
         return $this;
     }
 
+    // set Option
     public function setOption(int $option, $value): self
     {
         $this->options[$option] = $value;
         return $this;
     }
 
+    // set Options
     public function setOptions(array $options): self
     {
         $this->options = array_replace($this->options, $options);
@@ -121,8 +128,10 @@ class CurlClientUtils
         ];
 
         if (in_array($this->method, [self::METHOD_POST, self::METHOD_PUT, self::METHOD_PATCH])) {
+            $options[CURLOPT_POST] = true;
             $options[CURLOPT_POSTFIELDS] = $data;
         }
+
 
         $options = array_replace($this->options, $options);
 
@@ -141,18 +150,10 @@ class CurlClientUtils
         return $this->parseResponse($response);
     }
 
-    private function buildUrl(): string
-    {
-        if ($this->method === self::METHOD_GET && !empty($this->data) && is_array($this->data)) {
-            return $this->url . '?' . http_build_query($this->data);
-        }
-        return $this->url;
-    }
-
     private function prepareData()
     {
         if ($this->contentType === self::CONTENT_JSON && is_array($this->data)) {
-            return json_encode($this->data, JSON_THROW_ON_ERROR);
+            return json_encode($this->data);
         }
         return $this->data;
     }
@@ -160,8 +161,17 @@ class CurlClientUtils
     private function parseResponse($response)
     {
         if ($this->contentType === self::CONTENT_JSON) {
-            return json_decode($response, true, 512, JSON_THROW_ON_ERROR);
+            return json_decode($response, true, 512);
         }
         return $response;
+    }
+
+
+    private function buildUrl()
+    {
+        if ($this->method === self::METHOD_GET && !empty($this->data) && is_array($this->data)) {
+            return $this->url . '?' . http_build_query($this->data);
+        }
+        return $this->url;
     }
 }
