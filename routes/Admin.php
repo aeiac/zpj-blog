@@ -17,6 +17,7 @@ Route::prefix('admin')->middleware([AdminGlobalFunMiddleware::class])->group(fun
     Route::prefix('auth')->group(function () {
         Route::post('/login', [AuthController::class, 'login']);
         Route::post('/out', [AuthController::class, 'out']);
+        Route::post('/verify',[AuthController::class,'verify']);
     });
 
     // 系统配置模块

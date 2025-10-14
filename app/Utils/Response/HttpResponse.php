@@ -49,11 +49,11 @@ class HttpResponse
      *
      * @return array
      */
-    public static function unauthorized(string $message = '未授权', int $statusCode = 401): array
+    public static function unauthorized(string $message = '未登录或未授权', int $statusCode = 401): array
     {
         return [
             'code' => $statusCode,
-            'message' => $message,
+            'msg' => $message,
         ];
     }
 
@@ -69,7 +69,7 @@ class HttpResponse
     {
         return response()->json([
             'code' => $statusCode,
-            'message' => $message,
+            'msg' => $message,
         ]);
     }
 }

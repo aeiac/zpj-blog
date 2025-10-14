@@ -58,4 +58,10 @@ class AuthController extends BaseController
         }
         return $this->appResponse::successToArray();
     }
+
+    // 校验
+    public function verify(): array
+    {
+        return $this->appResponse::successToArray();
+    }
 }
