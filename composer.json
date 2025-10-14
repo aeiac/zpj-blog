@@ -6,13 +6,17 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-curl": "*",
+        "ext-fileinfo": "*",
+        "guzzlehttp/guzzle": "^7.9",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
+        "league/climate": "*",
         "predis/predis": "^2.3",
-      "ext-curl": "*",
-      "ext-mysql_xdevapi": "*",
-      "ext-fileinfo": "*",
-      "ext-http": "*"
+        "symfony/console": "^7.3",
+        "symfony/css-selector": "^7.2",
+        "symfony/dom-crawler": "^7.3",
+        "ext-mbstring": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
