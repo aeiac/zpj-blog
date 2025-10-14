@@ -51,10 +51,14 @@ class AuthAdminServices extends BaseAdminServices
         ];
         TokensUtils::setCache($token, 'session', json_encode($adminInfoAll, JSON_UNESCAPED_UNICODE));
         $data += [
+            'id'              => $adminUser->id,
             'name'            => $adminUser->name,
             'nickname'        => $adminUser->nickname,
             'last_login_time' => $adminUser->last_login_time,
             'token'           => $token,
+            'avatar'          => $adminUser->avatar,
+            'phone'           => $adminUser->phone,
+            'email'           => $adminUser->email,
             'msg'             => 'OK'
         ];
         $adminUser->last_login_ip = request()->ip();
